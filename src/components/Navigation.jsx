@@ -22,7 +22,6 @@ const PRIMARY = "#C8102E"; // Corporate Red
 const ACCENT = "#F4B400";  // Corporate Yellow
 const DARK = "#111827";    // Charcoal
 const MUTED = "#6B7280";
-const LIGHT = "#F8FAFC";
 
 // =========================================================
 // NAVIGATION LINKS
@@ -50,10 +49,23 @@ function Navigation() {
           MAIN NAVBAR
       ===================================================== */}
 
-      <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+      <div
+        className="
+          relative
+          mx-auto
+          flex
+          h-[76px]
+          max-w-7xl
+          items-center
+          justify-between
+          px-5
+          sm:px-6
+          lg:px-8
+        "
+      >
 
         {/* ===================================================
-            LOGO
+            LOGO - LEFT
         =================================================== */}
 
         <NavLink
@@ -63,7 +75,7 @@ function Navigation() {
         >
           <img
             src={logo}
-            alt="SUBANI Logo"
+            alt="IFTAR FOOD INDUSTRIES Logo"
             className="
               block
               h-11
@@ -78,175 +90,184 @@ function Navigation() {
         </NavLink>
 
         {/* ===================================================
-            DESKTOP NAVIGATION
+            DESKTOP NAVIGATION - EXACT CENTER
         =================================================== */}
 
-        <div className="hidden md:flex md:items-center">
+        <nav
+          className="
+            absolute
+            left-1/2
+            hidden
+            -translate-x-1/2
+            items-center
+            rounded-full
+            border
+            border-gray-200
+            bg-gray-50
+            p-1.5
+            md:flex
+          "
+        >
+          {NAV_LINKS.map((link) => {
+            const Icon = link.icon;
 
-          <nav
-            className="
-              flex
-              items-center
-              gap-1
-              rounded-full
-              border
-              border-gray-200
-              bg-gray-50
-              p-1.5
-            "
-          >
+            return (
+              <NavLink
+                key={link.href}
+                to={link.href}
+                className="
+                  group
+                  relative
+                  flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-transparent
+                  px-4
+                  py-2.5
+                  text-sm
+                  transition-all
+                  duration-300
+                  hover:border-[#C8102E]
+                  hover:bg-[#FFF5F6]
+                "
+              >
+                {({ isActive }) => (
+                  <>
+                    {/* =====================================
+                        ACTIVE BACKGROUND
+                    ====================================== */}
 
-            {NAV_LINKS.map((link) => {
-              const Icon = link.icon;
-
-              return (
-                <NavLink
-                  key={link.href}
-                  to={link.href}
-                  className="
-                    relative
-                    flex
-                    items-center
-                    gap-2
-                    rounded-full
-                    px-4
-                    py-2.5
-                    text-sm
-                    transition-all
-                    duration-200
-                  "
-                >
-                  {({ isActive }) => (
-                    <>
-                      {/* Active Background */}
-
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeNavBackground"
-                          className="
-                            absolute
-                            inset-0
-                            rounded-full
-                            bg-white
-                            shadow-sm
-                          "
-                          transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 30,
-                          }}
-                        />
-                      )}
-
-                      {/* Icon */}
-
+                    {isActive && (
                       <motion.div
-                        animate={{
-                          scale: isActive ? 1 : 0.95,
-                        }}
-                        transition={{ duration: 0.2 }}
-                        className="relative z-10"
-                        style={{
-                          color: isActive ? PRIMARY : MUTED,
-                        }}
-                      >
-                        <Icon
-                          size={17}
-                          strokeWidth={isActive ? 2.4 : 1.9}
-                        />
-                      </motion.div>
-
-                      {/* Label */}
-
-                      <span
+                        layoutId="activeNavBackground"
                         className="
-                          relative
-                          z-10
-                          whitespace-nowrap
+                          absolute
+                          inset-0
+                          rounded-full
+                          bg-white
+                          shadow-sm
                         "
                         style={{
-                          color: isActive ? PRIMARY : DARK,
-                          fontWeight: isActive ? 600 : 500,
+                          border: `1px solid ${PRIMARY}`,
                         }}
-                      >
-                        {link.label}
-                      </span>
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
+                      />
+                    )}
 
-                      {/* Yellow Active Indicator */}
+                    {/* =====================================
+                        ICON
+                    ====================================== */}
 
-                      {isActive && (
-                        <motion.span
-                          layoutId="activeNavIndicator"
-                          className="
-                            relative
-                            z-10
-                            h-1.5
-                            w-1.5
-                            rounded-full
-                          "
-                          style={{
-                            backgroundColor: ACCENT,
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 350,
-                            damping: 25,
-                          }}
-                        />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              );
-            })}
+                    <motion.div
+                      animate={{
+                        scale: isActive ? 1 : 0.95,
+                      }}
+                      transition={{
+                        duration: 0.2,
+                      }}
+                      className="
+                        relative
+                        z-10
+                        transition-colors
+                        duration-300
+                        group-hover:text-[#C8102E]
+                      "
+                      style={{
+                        color: isActive ? PRIMARY : MUTED,
+                      }}
+                    >
+                      <Icon
+                        size={17}
+                        strokeWidth={
+                          isActive ? 2.4 : 1.9
+                        }
+                      />
+                    </motion.div>
 
-          </nav>
-        </div>
+                    {/* =====================================
+                        LABEL
+                    ====================================== */}
 
-        {/* ===================================================
-            DESKTOP CTA
-        =================================================== */}
+                    <span
+                      className="
+                        relative
+                        z-10
+                        whitespace-nowrap
+                        transition-colors
+                        duration-300
+                        group-hover:text-[#C8102E]
+                      "
+                      style={{
+                        color: isActive
+                          ? PRIMARY
+                          : DARK,
+                        fontWeight: isActive
+                          ? 600
+                          : 500,
+                      }}
+                    >
+                      {link.label}
+                    </span>
 
-        <motion.div
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="hidden md:block"
-        >
-          <NavLink
-            to="/contact"
-            className="
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              px-6
-              py-3
-              text-sm
-              font-semibold
-              text-white
-              shadow-sm
-              transition-all
-              duration-200
-              hover:shadow-md
-            "
-            style={{
-              backgroundColor: PRIMARY,
-            }}
-          >
-            Get Started
+                    {/* =====================================
+                        YELLOW ACTIVE INDICATOR
+                    ====================================== */}
 
-            <span
-              className="
-                h-1.5
-                w-1.5
-                rounded-full
-              "
-              style={{
-                backgroundColor: ACCENT,
-              }}
-            />
-          </NavLink>
-        </motion.div>
+                    <motion.span
+                      layoutId={
+                        isActive
+                          ? "activeNavIndicator"
+                          : undefined
+                      }
+                      className="
+                        relative
+                        z-10
+                        h-1.5
+                        w-1.5
+                        rounded-full
+                        transition-all
+                        duration-300
+                        group-hover:scale-125
+                      "
+                      style={{
+                        backgroundColor: ACCENT,
+                        opacity: isActive ? 1 : 0,
+                      }}
+                    />
+
+                    {/* =====================================
+                        YELLOW HOVER LINE
+                    ====================================== */}
+
+                    <span
+                      className="
+                        absolute
+                        bottom-0.5
+                        left-1/2
+                        h-[2px]
+                        w-0
+                        -translate-x-1/2
+                        rounded-full
+                        transition-all
+                        duration-300
+                        group-hover:w-8
+                      "
+                      style={{
+                        backgroundColor: ACCENT,
+                      }}
+                    />
+                  </>
+                )}
+              </NavLink>
+            );
+          })}
+        </nav>
 
         {/* ===================================================
             MOBILE MENU BUTTON
@@ -259,6 +280,7 @@ function Navigation() {
             flex
             h-11
             w-11
+            shrink-0
             items-center
             justify-center
             rounded-full
@@ -267,7 +289,8 @@ function Navigation() {
             bg-gray-50
             transition-all
             duration-200
-            hover:bg-gray-100
+            hover:border-[#C8102E]
+            hover:bg-[#FFF5F6]
             md:hidden
           "
           style={{
@@ -280,18 +303,36 @@ function Navigation() {
             {isOpen ? (
               <motion.div
                 key="close"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
+                initial={{
+                  rotate: -90,
+                  opacity: 0,
+                }}
+                animate={{
+                  rotate: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  rotate: 90,
+                  opacity: 0,
+                }}
               >
                 <X size={23} />
               </motion.div>
             ) : (
               <motion.div
                 key="menu"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
+                initial={{
+                  rotate: 90,
+                  opacity: 0,
+                }}
+                animate={{
+                  rotate: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  rotate: -90,
+                  opacity: 0,
+                }}
               >
                 <Menu size={23} />
               </motion.div>
@@ -346,21 +387,20 @@ function Navigation() {
                       to={link.href}
                       onClick={() => setIsOpen(false)}
                       className="
+                        group
                         rounded-xl
+                        border
+                        border-transparent
                         px-3
                         py-2
-                        transition-colors
+                        transition-all
                         duration-200
+                        hover:border-[#C8102E]
+                        hover:bg-[#FFF5F6]
                       "
                     >
                       {({ isActive }) => (
-                        <div
-                          className="
-                            flex
-                            items-center
-                            gap-3
-                          "
-                        >
+                        <div className="flex items-center gap-3">
 
                           {/* Icon Box */}
 
@@ -386,17 +426,28 @@ function Navigation() {
                           >
                             <Icon
                               size={18}
-                              strokeWidth={isActive ? 2.4 : 2}
+                              strokeWidth={
+                                isActive ? 2.4 : 2
+                              }
                             />
                           </div>
 
                           {/* Label */}
 
                           <span
-                            className="text-sm"
+                            className="
+                              text-sm
+                              transition-colors
+                              duration-200
+                              group-hover:text-[#C8102E]
+                            "
                             style={{
-                              color: isActive ? PRIMARY : DARK,
-                              fontWeight: isActive ? 600 : 500,
+                              color: isActive
+                                ? PRIMARY
+                                : DARK,
+                              fontWeight: isActive
+                                ? 600
+                                : 500,
                             }}
                           >
                             {link.label}
@@ -424,51 +475,10 @@ function Navigation() {
                 })}
 
               </div>
-
-              {/* =================================================
-                  MOBILE CTA
-              ================================================= */}
-
-              <NavLink
-                to="/contact"
-                onClick={() => setIsOpen(false)}
-                className="
-                  mt-4
-                  flex
-                  items-center
-                  justify-center
-                  gap-2
-                  rounded-xl
-                  px-5
-                  py-3.5
-                  text-sm
-                  font-semibold
-                  text-white
-                  shadow-sm
-                "
-                style={{
-                  backgroundColor: PRIMARY,
-                }}
-              >
-                Get Started
-
-                <span
-                  className="
-                    h-1.5
-                    w-1.5
-                    rounded-full
-                  "
-                  style={{
-                    backgroundColor: ACCENT,
-                  }}
-                />
-              </NavLink>
-
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </header>
   );
 }
