@@ -64,7 +64,7 @@ function Hero() {
           >
             <span className="h-0.5 w-8 rounded-full bg-[#ffca00]" />
 
-            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[#ffca00]">
+            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-[#fF3D57]">
               Welcome to Subani
             </span>
           </motion.div>
@@ -75,7 +75,7 @@ function Hero() {
             className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
           >
             Quality Products.
-            <span className="block text-[#ffca00]">
+            <span className="block text-[#fF3D57]">
               Trusted Solutions.
             </span>
           </motion.h1>
