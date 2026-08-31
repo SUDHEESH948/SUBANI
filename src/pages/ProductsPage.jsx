@@ -3,15 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Check } from "lucide-react";
 
 // =========================================================
-// CORPORATE BRAND CONSTANTS & SPLIT ACCENTS
+// CORPORATE BRAND CONSTANTS
 // =========================================================
 
 const PRIMARY = "#C8102E"; // Brand Red
-const YELLOW = "#F4B400";  // Brand Yellow
+const ACCENT = "#F4B400";  // Accent Yellow
 const DARK = "#111827";
-
-// 50% Red + 50% Yellow Hard Split Gradient
-const SPLIT_GRADIENT = `linear-gradient(90deg, ${PRIMARY} 0%, ${PRIMARY} 50%, ${YELLOW} 50%, ${YELLOW} 100%)`;
 
 const COMPANY_NAME = "IFTAR FOOD INDUSTRIES";
 
@@ -127,7 +124,7 @@ function ProductCard({ product, onInquire }) {
       "
     >
       {/* =================================================
-          PRODUCT IMAGE & 50/50 SPLIT ACCENTS
+          PRODUCT IMAGE & ACCENTS
       ================================================= */}
       <div className="relative h-64 overflow-hidden bg-gray-100">
         <img
@@ -181,10 +178,10 @@ function ProductCard({ product, onInquire }) {
           {product.category}
         </span>
 
-        {/* Exactly 50% Red + 50% Yellow Linear Gradient Sweep */}
+        {/* Liquid Yellow Bottom Accent Strip */}
         <motion.div
           className="absolute bottom-0 left-0 h-1.5 w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
-          style={{ background: SPLIT_GRADIENT }}
+          style={{ backgroundColor: ACCENT }}
         />
       </div>
 
@@ -331,19 +328,18 @@ export default function Products() {
             dependable freshness, and consistent quality.
           </motion.p>
 
-          {/* Section Divider with 50/50 Split */}
           <motion.div
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-6 h-1 w-20 origin-left rounded-full"
-            style={{ background: SPLIT_GRADIENT }}
+            style={{ backgroundColor: PRIMARY }}
           />
         </div>
 
         {/* =================================================
-            CATEGORY TABS (RED SELECTED PILL + 50/50 ACCENT DOT)
+            CATEGORY TABS (RED SELECTED PILL + ANIMATIONS)
         ================================================= */}
         <div className="mt-10 flex w-full flex-wrap items-center justify-start gap-2.5">
           {CATEGORIES.map((category) => {
@@ -393,7 +389,7 @@ export default function Products() {
                   <div className="absolute inset-0 rounded-full border border-gray-200 bg-white transition-colors duration-200 hover:border-red-200 hover:bg-gray-50" />
                 )}
 
-                {/* Tab Label & Animated 50/50 Split Dot */}
+                {/* Tab Label & Animated Dot */}
                 <span className="relative z-10 flex items-center gap-2">
                   {category}
 
@@ -403,8 +399,8 @@ export default function Products() {
                       initial={{ scale: 0 }}
                       animate={{ scale: [0, 1.3, 1] }}
                       transition={{ duration: 0.3 }}
-                      className="inline-block h-2.5 w-2.5 rounded-full ring-2 ring-white/40"
-                      style={{ background: SPLIT_GRADIENT }}
+                      className="inline-block h-2 w-2 rounded-full ring-2 ring-white/30"
+                      style={{ backgroundColor: ACCENT }}
                     />
                   )}
                 </span>
