@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Check, ShoppingBag, MessageSquare, Sparkles } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 
 // =========================================================
-// CORPORATE BRAND CONSTANTS
+// CORPORATE BRAND CONSTANTS & SPLIT ACCENTS
 // =========================================================
 
-const PRIMARY = "#C8102E"; // Corporate Red
-const ACCENT = "#F4B400";  // Corporate Yellow
+const PRIMARY = "#C8102E"; // Brand Red
+const YELLOW = "#F4B400";  // Brand Yellow
 const DARK = "#111827";
+
+// 50% Red + 50% Yellow Hard Split Gradient
+const SPLIT_GRADIENT = `linear-gradient(90deg, ${PRIMARY} 0%, ${PRIMARY} 50%, ${YELLOW} 50%, ${YELLOW} 100%)`;
+
 const COMPANY_NAME = "IFTAR FOOD INDUSTRIES";
 
 // =========================================================
@@ -51,9 +55,48 @@ const PRODUCTS = [
   },
 ];
 
-const CATEGORIES = ["All", ...new Set(PRODUCTS.map((p) => p.category))];
+const CATEGORIES = [
+  "All",
+  ...new Set(PRODUCTS.map((product) => product.category)),
+];
+
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80";
+
+// =========================================================
+// ANIMATION VARIANTS
+// =========================================================
+
+const gridVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 25, scale: 0.94 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24,
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.92,
+    y: -10,
+    transition: { duration: 0.2, ease: "easeOut" },
+  },
+};
 
 // =========================================================
 // PRODUCT CARD
@@ -62,14 +105,30 @@ const FALLBACK_IMAGE =
 function ProductCard({ product, onInquire }) {
   return (
     <motion.article
+      variants={cardVariants}
       layout
-      initial={{ opacity: 0, y: 25 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-red-200 hover:shadow-xl"
+      whileHover={{ y: -6 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="
+        group
+        relative
+        flex
+        flex-col
+        overflow-hidden
+        rounded-2xl
+        border
+        border-gray-200/90
+        bg-white
+        shadow-sm
+        transition-shadow
+        duration-300
+        hover:border-red-200
+        hover:shadow-2xl
+      "
     >
-      {/* Product Image Header */}
+      {/* =================================================
+          PRODUCT IMAGE & 50/50 SPLIT ACCENTS
+      ================================================= */}
       <div className="relative h-64 overflow-hidden bg-gray-100">
         <img
           src={product.image}
@@ -78,36 +137,60 @@ function ProductCard({ product, onInquire }) {
           onError={(e) => {
             e.currentTarget.src = FALLBACK_IMAGE;
           }}
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          className="
+            h-full
+            w-full
+            object-cover
+            transition-transform
+            duration-700
+            ease-out
+            group-hover:scale-110
+          "
         />
 
         {/* Gradient Overlay */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)",
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 60%)",
           }}
         />
 
         {/* Category Badge */}
         <span
-          className="absolute left-4 top-4 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider shadow-sm"
+          className="
+            absolute
+            left-4
+            top-4
+            rounded-full
+            px-3
+            py-1
+            text-[11px]
+            font-bold
+            uppercase
+            tracking-wider
+            shadow-md
+            backdrop-blur-md
+          "
           style={{
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
             color: PRIMARY,
           }}
         >
           {product.category}
         </span>
 
-        {/* Yellow Bottom Accent Bar */}
-        <div
-          className="absolute bottom-0 left-0 h-1 w-0 transition-all duration-500 group-hover:w-full"
-          style={{ backgroundColor: ACCENT }}
+        {/* Exactly 50% Red + 50% Yellow Linear Gradient Sweep */}
+        <motion.div
+          className="absolute bottom-0 left-0 h-1.5 w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+          style={{ background: SPLIT_GRADIENT }}
         />
       </div>
 
-      {/* Product Details */}
+      {/* =================================================
+          PRODUCT DETAILS
+      ================================================= */}
       <div className="flex flex-1 flex-col p-6">
         <h3 className="text-xl font-bold tracking-tight text-gray-900 transition-colors duration-300 group-hover:text-red-700">
           {product.name}
@@ -120,21 +203,44 @@ function ProductCard({ product, onInquire }) {
         {/* Feature Tags */}
         <div className="mt-5 flex flex-wrap gap-2">
           {product.specs.map((spec) => (
-            <span
+            <motion.span
               key={spec}
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-100 bg-gray-50 px-2.5 py-1 text-[11px] font-semibold text-gray-700"
+              whileHover={{ scale: 1.05 }}
+              className="
+                inline-flex
+                items-center
+                gap-1.5
+                rounded-md
+                border
+                border-gray-100
+                bg-gray-50/80
+                px-2.5
+                py-1
+                text-[11px]
+                font-semibold
+                text-gray-700
+                transition-colors
+                group-hover:border-red-100
+                group-hover:bg-red-50/40
+              "
             >
-              <Check className="h-3 w-3" strokeWidth={3} style={{ color: PRIMARY }} />
+              <Check
+                className="h-3 w-3"
+                strokeWidth={3}
+                style={{ color: PRIMARY }}
+              />
               {spec}
-            </span>
+            </motion.span>
           ))}
         </div>
 
-        {/* Price & Action Area */}
+        {/* =================================================
+            PRICING + INQUIRY
+        ================================================= */}
         <div className="mt-6 border-t border-gray-100 pt-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <span className="block text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
                 Pricing
               </span>
               <span className="mt-0.5 block text-xs font-bold text-gray-900 sm:text-sm">
@@ -142,16 +248,33 @@ function ProductCard({ product, onInquire }) {
               </span>
             </div>
 
+            {/* Inquire Button with Micro-interactions */}
             <motion.button
               type="button"
               onClick={() => onInquire(product)}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:shadow-md"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="
+                group/btn
+                relative
+                inline-flex
+                items-center
+                gap-1.5
+                overflow-hidden
+                rounded-lg
+                px-4
+                py-2.5
+                text-xs
+                font-bold
+                text-white
+                shadow-sm
+                transition-all
+                hover:shadow-lg
+              "
               style={{ backgroundColor: PRIMARY }}
             >
               <span>Inquire</span>
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5" />
             </motion.button>
           </div>
         </div>
@@ -161,7 +284,7 @@ function ProductCard({ product, onInquire }) {
 }
 
 // =========================================================
-// MAIN PRODUCTS SECTION
+// MAIN PRODUCTS COMPONENT
 // =========================================================
 
 export default function Products() {
@@ -170,11 +293,11 @@ export default function Products() {
   const filteredProducts =
     selectedCategory === "All"
       ? PRODUCTS
-      : PRODUCTS.filter((p) => p.category === selectedCategory);
+      : PRODUCTS.filter((product) => product.category === selectedCategory);
 
   const handleInquire = (product) => {
     const message = encodeURIComponent(
-      `Hello ${COMPANY_NAME}, I am interested in inquiring about "${product.name}". Please share details and pricing.`
+      `Hello ${COMPANY_NAME}, I am interested in "${product.name}". Please share the product details and pricing.`
     );
     window.open(`https://wa.me/?text=${message}`, "_blank");
   };
@@ -182,80 +305,125 @@ export default function Products() {
   return (
     <section className="min-h-screen bg-gray-50 px-6 py-20 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        {/* Section Header */}
-        <div className="mx-auto max-w-3xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
-            style={{
-              borderColor: `${ACCENT}66`,
-              backgroundColor: `${ACCENT}15`,
-              color: PRIMARY,
-            }}
-          >
-            <ShoppingBag className="h-4 w-4" style={{ color: ACCENT }} />
-            {COMPANY_NAME}
-          </motion.div>
-
+        {/* =================================================
+            HEADER SECTION
+        ================================================= */}
+        <div className="max-w-3xl">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-5 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl"
+            transition={{ duration: 0.6 }}
+            className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl"
           >
-            Explore Our <span style={{ color: PRIMARY }}>Products</span>
+            Explore Our{" "}
+            <span style={{ color: PRIMARY }}>Products</span>
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mt-4 max-w-2xl text-base leading-7 text-gray-600"
           >
-            Discover quality food products from{" "}
-            <strong style={{ color: DARK }}>{COMPANY_NAME}</strong>, crafted with high
-            hygiene standards, dependable freshness, and uniform consistency.
+            Discover quality food products crafted with high hygiene standards,
+            dependable freshness, and consistent quality.
           </motion.p>
 
+          {/* Section Divider with 50/50 Split */}
           <motion.div
-            initial={{ width: 0 }}
-            whileInView={{ width: 70 }}
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mx-auto mt-6 h-1 rounded-full"
-            style={{ backgroundColor: PRIMARY }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-6 h-1 w-20 origin-left rounded-full"
+            style={{ background: SPLIT_GRADIENT }}
           />
         </div>
 
-        {/* Category Filters */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
-          {CATEGORIES.map((cat) => {
-            const isActive = selectedCategory === cat;
+        {/* =================================================
+            CATEGORY TABS (RED SELECTED PILL + 50/50 ACCENT DOT)
+        ================================================= */}
+        <div className="mt-10 flex w-full flex-wrap items-center justify-start gap-2.5">
+          {CATEGORIES.map((category) => {
+            const isActive = selectedCategory === category;
+
             return (
               <button
-                key={cat}
+                key={category}
                 type="button"
-                onClick={() => setSelectedCategory(cat)}
-                className="rounded-full px-5 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-200"
+                onClick={() => setSelectedCategory(category)}
+                className="
+                  relative
+                  rounded-full
+                  px-5
+                  py-2.5
+                  text-xs
+                  font-bold
+                  uppercase
+                  tracking-wider
+                  transition-colors
+                  duration-200
+                  focus:outline-none
+                "
                 style={{
-                  backgroundColor: isActive ? PRIMARY : "#E5E7EB",
                   color: isActive ? "#FFFFFF" : DARK,
                 }}
               >
-                {cat}
+                {/* Active Red Tab Pill Animation */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeRedTab"
+                    className="absolute inset-0 rounded-full shadow-lg"
+                    style={{
+                      backgroundColor: PRIMARY,
+                      boxShadow: `0 8px 20px -4px rgba(200, 16, 46, 0.45)`,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 450,
+                      damping: 35,
+                    }}
+                  />
+                )}
+
+                {/* Inactive Tab Border/Background */}
+                {!isActive && (
+                  <div className="absolute inset-0 rounded-full border border-gray-200 bg-white transition-colors duration-200 hover:border-red-200 hover:bg-gray-50" />
+                )}
+
+                {/* Tab Label & Animated 50/50 Split Dot */}
+                <span className="relative z-10 flex items-center gap-2">
+                  {category}
+
+                  {isActive && (
+                    <motion.span
+                      layoutId="activeTabDot"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.3, 1] }}
+                      transition={{ duration: 0.3 }}
+                      className="inline-block h-2.5 w-2.5 rounded-full ring-2 ring-white/40"
+                      style={{ background: SPLIT_GRADIENT }}
+                    />
+                  )}
+                </span>
               </button>
             );
           })}
         </div>
 
-        {/* Product Grid */}
-        <motion.div layout className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence>
+        {/* =================================================
+            PRODUCT GRID (SYNCHRONIZED STAGGER & POP)
+        ================================================= */}
+        <motion.div
+          key={selectedCategory}
+          variants={gridVariants}
+          initial="hidden"
+          animate="visible"
+          className="mt-12 grid items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          <AnimatePresence mode="popLayout">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -265,8 +433,6 @@ export default function Products() {
             ))}
           </AnimatePresence>
         </motion.div>
-
-        
       </div>
     </section>
   );

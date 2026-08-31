@@ -13,7 +13,7 @@ function Footer() {
             <img
               src={logo}
               alt="SUBANI Logo"
-              className="h-14 w-auto object-contain object-left"
+              className="h-14 w-100 object-contain object-left"
             />
           </div>
 
@@ -25,8 +25,7 @@ function Footer() {
 
             <div className="mt-4 space-y-2 text-sm leading-6 text-gray-400">
               <p>Pump House Road Perunthallur PO VP Puram</p>
-              <p>Tirur</p>
-              <p>Malappuram (Dist)</p>
+              <p>Tirur Malappuram (Dist)</p>
               <p>Kerala - 676102</p>
 
               <p className="pt-2">
