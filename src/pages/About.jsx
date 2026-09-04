@@ -1,25 +1,16 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Phone, MapPin } from "lucide-react";
-import image from "../assets/image.png";
+import { Phone, MapPin, Sparkles, ShieldCheck, HeartHandshake, Award } from "lucide-react";
+import brandLogo from "../assets/subani.png";
 
-// =========================================================
-// CORPORATE BRAND CONSTANTS & GRADIENTS
-// =========================================================
-
+// Corporate Brand Constants
 const PRIMARY = "#C8102E"; // Brand Red
-const YELLOW = "#F4B400";  // Brand Yellow
+const YELLOW = "#F4B400";  // Brand Yellow / Gold
 const DARK = "#111827";
 
-// 50% Red + 50% Yellow Split Gradient
 const SPLIT_GRADIENT = `linear-gradient(90deg, ${PRIMARY} 0%, ${PRIMARY} 50%, ${YELLOW} 50%, ${YELLOW} 100%)`;
 
-// =========================================================
-// ANIMATION VARIANTS
-// =========================================================
-
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 25 },
   visible: {
     opacity: 1,
     y: 0,
@@ -32,36 +23,43 @@ const staggerContainer = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1,
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
     },
   },
 };
 
-const imageReveal = {
-  hidden: { opacity: 0, scale: 0.96, y: 20 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: "easeOut" },
+const PILLARS = [
+  {
+    icon: Sparkles,
+    title: "Uncompromising Freshness",
+    desc: "From farm to retail shelf, every batch is selected to maintain peak freshness and flavor.",
   },
-};
-
-// =========================================================
-// ABOUT COMPONENT
-// =========================================================
+  {
+    icon: ShieldCheck,
+    title: "Rigorous Hygiene",
+    desc: "Strict adherence to safety standards and hygienic handling at every stage of storage.",
+  },
+  {
+    icon: Award,
+    title: "Trusted Benchmark",
+    desc: "Backed by the manufacturing standards and credibility of Iftar Food Industries.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Customer First",
+    desc: "Dedicated to building long-term relationships with local households and bulk buyers alike.",
+  },
+];
 
 export default function About() {
   return (
-    <section className="min-h-screen bg-gray-50/50 px-6 py-20 lg:px-8">
+    <section className="min-h-screen bg-gray-50/50 px-6 py-16 sm:py-20 lg:px-8">
       <div className="mx-auto max-w-7xl">
-
         {/* =================================================
-            HERO / INTRODUCTION (2-COLUMN GRID)
+            HERO / INTRODUCTION (BALANCED 2-COLUMN GRID)
         ================================================= */}
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-
           {/* Text Content */}
           <motion.div
             initial="hidden"
@@ -94,8 +92,8 @@ export default function About() {
               variants={fadeInUp}
               className="mt-6 text-xl font-bold leading-8 text-gray-900 sm:text-2xl"
             >
-              “Elevate Your Shopping Experience with{" "}
-              <span style={{ color: PRIMARY }}>Subani</span>”
+              &ldquo;Elevate Your Shopping Experience with{" "}
+              <span style={{ color: PRIMARY }}>Subani</span>&rdquo;
             </motion.h2>
 
             <motion.p
@@ -103,30 +101,140 @@ export default function About() {
               className="mt-6 text-base leading-8 text-gray-600"
             >
               Welcome to <strong>Subani</strong>, your one-stop destination for all your
-              grocery needs. At Subani, we pride ourselves on offering a
-              wide range of high-quality products that cater to every
-              customer's preferences and dietary requirements.
+              grocery and food provisions. At Subani, we pride ourselves on offering a
+              wide range of high-quality products that cater to every customer&apos;s preferences
+              and dietary requirements.
             </motion.p>
 
             <motion.p
               variants={fadeInUp}
               className="mt-4 text-base leading-8 text-gray-600"
             >
-              Whether you're looking for fresh produce, pantry essentials,
-              or specialty items, our store is stocked with an extensive
-              selection to meet your demands. With a commitment to
-              exceptional customer service, Subani aims to be your trusted partner.
+              Whether you&apos;re looking for fresh ingredients, pantry essentials, or
+              specialty items, our facilities are stocked with an extensive selection
+              to meet your demands. Backed by Iftar Food Industries, Subani upholds a
+              steadfast commitment to unmatched quality and service.
             </motion.p>
 
             {/* Split Gradient Bar */}
             <motion.div
               variants={fadeInUp}
-              className="mt-8 h-1 w-24 rounded-full"
+              className="mt-8 h-1.5 w-28 rounded-full"
               style={{ background: SPLIT_GRADIENT }}
             />
           </motion.div>
 
-          
+          {/* Visual Showcase (Second Column) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 30 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="relative"
+          >
+            <div
+              className="absolute -inset-2 rounded-3xl opacity-30 blur-2xl"
+              style={{
+                background: `linear-gradient(135deg, ${PRIMARY}, ${YELLOW})`,
+              }}
+            />
+
+            <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-3 shadow-2xl">
+              <div className="relative h-96 w-full overflow-hidden rounded-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80"
+                  alt="Subani Fresh Market"
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+
+                {/* Glassmorphism Floating Badge */}
+                <motion.div
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-2xl border border-white/30 bg-black/60 p-4 text-white backdrop-blur-md"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-xl"
+                      style={{ backgroundColor: PRIMARY }}
+                    >
+                      <Sparkles className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-yellow-400">
+                        Heritage & Freshness
+                      </p>
+                      <p className="text-sm font-extrabold text-white">
+                        Everyday Quality You Trust
+                      </p>
+                    </div>
+                  </div>
+                  <span
+                    className="rounded-full px-3 py-1 text-xs font-black"
+                    style={{ backgroundColor: YELLOW, color: DARK }}
+                  >
+                    100% Pure
+                  </span>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* =================================================
+            CORE VALUES / COMMITMENTS (4 PILLARS)
+        ================================================= */}
+        <div className="mt-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-2xl mx-auto"
+          >
+            <span
+              className="text-xs font-bold uppercase tracking-widest"
+              style={{ color: PRIMARY }}
+            >
+              Our Core Commitments
+            </span>
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              Why Customers Rely on <span style={{ color: PRIMARY }}>Subani</span>
+            </h2>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {PILLARS.map((pillar, idx) => {
+              const Icon = pillar.icon;
+              return (
+                <motion.div
+                  key={idx}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6 }}
+                  className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:border-red-200 hover:shadow-xl"
+                >
+                  <div
+                    className="flex h-12 w-12 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: `${PRIMARY}12`, color: PRIMARY }}
+                  >
+                    <Icon className="h-6 w-6" strokeWidth={2.2} />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-gray-900">
+                    {pillar.title}
+                  </h3>
+                  <p className="mt-2 text-xs leading-relaxed text-gray-600">
+                    {pillar.desc}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
         </div>
 
         {/* =================================================
@@ -175,7 +283,7 @@ export default function About() {
                 className="mt-6 text-xl font-bold tracking-tight"
                 style={{ color: PRIMARY }}
               >
-                ❝ Everything as fresh as they come. ❞
+                &ldquo;Everything as fresh as they come.&rdquo;
               </p>
             </div>
 
@@ -224,10 +332,10 @@ export default function About() {
           </span>
 
           <motion.img
-            src="https://subani.in/site_assets/images/Logo/logo.png"
+            src={brandLogo}
             alt="Subani Logo"
-            className="mt-6 h-20 w-auto object-contain"
-            whileHover={{ scale: 1.06 }}
+            className="mt-6 h-16 w-auto object-contain"
+            whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
           />
 
@@ -274,7 +382,6 @@ export default function About() {
             <span>Call Subani: +91 75101 16699</span>
           </motion.a>
         </motion.div>
-
       </div>
     </section>
   );
