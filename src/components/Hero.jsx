@@ -1,62 +1,129 @@
-﻿import { motion, useMotionValue, useTransform } from "framer-motion";
+﻿import { useState, useEffect } from "react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  useSpring,
+  AnimatePresence,
+} from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, CheckCircle2, ShieldCheck, HeartHandshake } from "lucide-react";
+import {
+  ArrowRight,
+  Smartphone,
+  Building2,
+  ShoppingBag,
+  Store,
+  Factory,
+  Utensils,
+  Truck,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
+  ShieldCheck,
+  TrendingUp,
+} from "lucide-react";
 
-// Corporate Brand Colors
-const PRIMARY = "#C8102E"; // Corporate Red
-const ACCENT = "#F4B400";  // Corporate Yellow / Gold
+/* ============================================================
+   BRAND COLORS
+============================================================ */
 
-// Animation Variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.08,
-    },
+const PRIMARY = "#FF3D57";
+const PRIMARY_DARK = "#D92B43";
+const ACCENT = "#FFCA00";
+const ACCENT_DARK = "#E5A900";
+const TEXT = "#171719";
+
+/* ============================================================
+   GOOGLE PLAY LINKS
+============================================================ */
+
+const SUBANI_APP_URL =
+  "https://play.google.com/store/apps/details?id=com.datacubeinfo.subani";
+
+const SUBANI_WHOLESALE_APP_URL =
+  "https://play.google.com/store/apps/details?id=com.datacubeinfo.subani_wholesale";
+
+/* ============================================================
+   COMPANIES DATA (KOOLATH GROUP ECOSYSTEM)
+============================================================ */
+
+const COMPANIES = [
+  {
+    id: "milling",
+    name: "Koolath Milling Company",
+    shortName: "Koolath Milling",
+    tag: "Processing & Production",
+    icon: Factory,
+    image:
+      "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=1200&q=80",
+    badge: "Since 1985",
   },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    },
+  {
+    id: "iftar",
+    name: "Iftar Food Industries",
+    shortName: "Iftar Food",
+    tag: "Culinary & Packaged Foods",
+    icon: Utensils,
+    image:
+      "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80",
+    badge: "Quality First",
   },
-};
-
-const floatCardVariants = {
-  hidden: { opacity: 0, scale: 0.92, y: 30 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.22, 1, 0.36, 1],
-      delay: 0.25,
-    },
+  {
+    id: "enterprises",
+    name: "Koolath Enterprises",
+    shortName: "Koolath Logistics",
+    tag: "Commercial Trading & Supply",
+    icon: Truck,
+    image:
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80",
+    badge: "B2B Logistics",
   },
-};
+  {
+    id: "supermarket",
+    name: "Subani Koolath Supermarket",
+    shortName: "Subani Mart",
+    tag: "Retail & Daily Provisions",
+    icon: Store,
+    image:
+      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80",
+    badge: "Retail Mart",
+  },
+  {
+    id: "archend",
+    name: "Archend Builders & Events",
+    shortName: "Archend Events",
+    tag: "Architecture & Luxury Celebrations",
+    icon: Sparkles,
+    image:
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+    badge: "Premium Design",
+  },
+];
+
+/* ============================================================
+   HERO COMPONENT
+============================================================ */
 
 function Hero() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  // 3D Card tilt effect
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useTransform(mouseY, [-150, 150], [8, -8]);
-  const rotateY = useTransform(mouseX, [-150, 150], [-8, 8]);
+  const smoothX = useSpring(mouseX, { stiffness: 140, damping: 22 });
+  const smoothY = useSpring(mouseY, { stiffness: 140, damping: 22 });
+
+  const rotateX = useTransform(smoothY, [-200, 200], [5, -5]);
+  const rotateY = useTransform(smoothX, [-200, 200], [-5, 5]);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    mouseX.set(e.clientX - centerX);
-    mouseY.set(e.clientY - centerY);
+    mouseX.set(e.clientX - (rect.left + rect.width / 2));
+    mouseY.set(e.clientY - (rect.top + rect.height / 2));
   };
 
   const handleMouseLeave = () => {
@@ -64,237 +131,304 @@ function Hero() {
     mouseY.set(0);
   };
 
+  // Auto slide runner
+  useEffect(() => {
+    if (!isPlaying || COMPANIES.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % COMPANIES.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  const handleNext = () => {
+    if (COMPANIES.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % COMPANIES.length);
+  };
+
+  const handlePrev = () => {
+    if (COMPANIES.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + COMPANIES.length) % COMPANIES.length);
+  };
+
+  const activeCompany = COMPANIES[currentIndex] || COMPANIES[0];
+  const IconComponent = activeCompany?.icon || Sparkles;
+
   return (
-    <section className="relative flex min-h-[calc(100vh-76px)] items-center overflow-hidden bg-gray-950 py-16 lg:py-24">
-      {/* Dynamic Ambient Background Glows */}
+    <section className="relative min-h-[calc(100vh-76px)] w-full overflow-hidden bg-gradient-to-b from-white via-rose-50/20 to-amber-50/15 py-8 sm:py-12 lg:py-16 flex items-center text-[#171719]">
+      {/* Ambient Lighting Blurs */}
       <div
-        className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full opacity-30 blur-[100px] animate-pulse-glow"
+        className="pointer-events-none absolute -left-32 -top-32 h-[420px] w-[420px] rounded-full blur-[140px] opacity-15"
         style={{ backgroundColor: PRIMARY }}
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full opacity-25 blur-[120px] animate-pulse-glow"
+        className="pointer-events-none absolute -right-32 top-1/3 h-[420px] w-[420px] rounded-full blur-[140px] opacity-15"
         style={{ backgroundColor: ACCENT }}
         aria-hidden="true"
       />
 
-      {/* Grid Mesh Subtle Texture */}
+      {/* Top Accent Gradient Line */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute left-0 right-0 top-0 h-[3px]"
         style={{
-          backgroundImage: `radial-gradient(#ffffff 1px, transparent 1px)`,
-          backgroundSize: "28px 28px",
+          background: `linear-gradient(90deg, ${PRIMARY} 0%, ${ACCENT} 50%, ${PRIMARY} 100%)`,
         }}
-        aria-hidden="true"
       />
 
-      {/* Main Content Container */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-8">
-        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
-          {/* Left Column: Headline & CTA */}
+      {/* Main Grid Container */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-8 md:grid-cols-12 lg:gap-12">
+          {/* ================= LEFT CONTENT ================= */}
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="text-left lg:col-span-7"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="w-full md:col-span-6 lg:col-span-6"
           >
-            {/* Eyebrow Pill */}
-            <motion.div
-              variants={itemVariants}
-              className="mb-5 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md"
-            >
+            {/* Top Brand Tag */}
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/80 px-3.5 py-1.5 shadow-xs backdrop-blur-sm">
               <span
                 className="h-2 w-2 rounded-full animate-pulse"
                 style={{ backgroundColor: ACCENT }}
               />
-              <span className="text-xs font-bold uppercase tracking-[0.22em] text-white/90">
-                Welcome to Subani
-              </span>
-              <span className="text-xs text-white/40">•</span>
               <span
-                className="text-xs font-semibold uppercase tracking-wider"
-                style={{ color: ACCENT }}
-              >
-                Iftar Food Industries
-              </span>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              variants={itemVariants}
-              className="text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl md:text-6xl"
-            >
-              Quality Products.
-              <span
-                className="block mt-1 font-black"
+                className="text-xs font-black uppercase tracking-[0.2em]"
                 style={{ color: PRIMARY }}
               >
-                Trusted Solutions.
+                Subani
               </span>
-            </motion.h1>
+              <span className="text-xs text-gray-300">/</span>
+              <span className="text-xs font-semibold text-gray-600">
+                Koolath Group
+              </span>
+            </div>
 
-            {/* Description */}
-            <motion.p
-              variants={itemVariants}
-              className="mt-6 max-w-xl text-base leading-relaxed text-gray-300 sm:text-lg"
-            >
-              Explore our industrial-grade catalog and retail provisions engineered
-              to deliver unmatched reliability, freshness, hygiene standards, and
-              long-term operational value.
-            </motion.p>
+            {/* Headline */}
+            <h1 className="max-w-xl text-3xl font-black leading-[1.08] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl text-gray-950">
+              Fresh Provisions.
+              <span
+                className="mt-2 block font-black"
+                style={{ color: PRIMARY }}
+              >
+                Wholesale & Retail
+              </span>
+              <span className="mt-1 block text-gray-900">Made Simple.</span>
+            </h1>
 
-            {/* CTA Buttons */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-8 flex flex-wrap items-center gap-4"
-            >
-              {/* Primary Button */}
+            {/* Subtitle */}
+            <p className="mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-gray-600">
+              Direct sourcing, hygienic processing, and scheduled doorstep
+              delivery for households, supermarkets, and commercial businesses
+              across Kerala.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="mt-6 flex flex-wrap items-center gap-2.5 sm:gap-3">
               <Link to="/products">
                 <motion.div
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="group inline-flex items-center justify-center gap-2.5 rounded-xl px-7 py-3.5 text-sm font-bold text-gray-950 shadow-lg shadow-yellow-500/20 transition-all hover:shadow-xl focus:outline-none"
-                  style={{ backgroundColor: ACCENT }}
+                  whileHover={{ y: -2, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group inline-flex items-center gap-2 rounded-xl px-5 py-3 text-xs sm:text-sm font-bold text-white transition-all shadow-md"
+                  style={{
+                    backgroundColor: PRIMARY,
+                    boxShadow: "0 8px 20px rgba(255,61,87,0.28)",
+                  }}
                 >
-                  <span>Explore Products</span>
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ShoppingBag className="h-4 w-4" />
+                  <span>Products</span>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </motion.div>
               </Link>
 
-              {/* Secondary Button */}
-              <Link to="/contact">
+              <a
+                href={SUBANI_APP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <motion.div
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-white hover:bg-white hover:text-gray-950 focus:outline-none"
+                  whileHover={{ y: -2, borderColor: PRIMARY }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-xs sm:text-sm font-semibold text-gray-800 transition-all hover:shadow-sm"
                 >
-                  Contact Us
+                  <Smartphone className="h-4 w-4" style={{ color: PRIMARY }} />
+                  <span>Subani App</span>
                 </motion.div>
-              </Link>
-            </motion.div>
+              </a>
 
-            {/* Trust Highlights */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-10 grid grid-cols-3 gap-4 border-t border-white/10 pt-6 max-w-lg"
-            >
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 shrink-0" style={{ color: ACCENT }} />
-                <span className="text-xs font-semibold text-gray-300">
-                  100% Quality Checked
-                </span>
+              <a
+                href={SUBANI_WHOLESALE_APP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <motion.div
+                  whileHover={{ y: -2, borderColor: ACCENT }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-xs sm:text-sm font-semibold text-gray-800 transition-all hover:shadow-sm"
+                >
+                  <Building2 className="h-4 w-4" style={{ color: PRIMARY }} />
+                  <span>Wholesale</span>
+                </motion.div>
+              </a>
+            </div>
+
+            {/* Stats Row */}
+            <div className="mt-8 grid grid-cols-3 gap-3 border-t border-gray-100 pt-5 sm:max-w-md">
+              <div className="rounded-xl border border-gray-100 bg-white/70 p-2.5 shadow-2xs text-left">
+                <p className="text-lg sm:text-xl font-black text-gray-900">
+                  1,500+
+                </p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                  Products
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 shrink-0" style={{ color: PRIMARY }} />
-                <span className="text-xs font-semibold text-gray-300">
-                  Fresh Ingredients
-                </span>
+
+              <div className="rounded-xl border border-gray-100 bg-white/70 p-2.5 shadow-2xs text-left">
+                <p
+                  className="text-lg sm:text-xl font-black"
+                  style={{ color: PRIMARY }}
+                >
+                  99.8%
+                </p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                  Fulfillment
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <HeartHandshake className="h-4 w-4 shrink-0" style={{ color: ACCENT }} />
-                <span className="text-xs font-semibold text-gray-300">
-                  Trusted Partner
-                </span>
+
+              <div className="rounded-xl border border-gray-100 bg-white/70 p-2.5 shadow-2xs text-left">
+                <p
+                  className="text-lg sm:text-xl font-black"
+                  style={{ color: ACCENT_DARK }}
+                >
+                  100%
+                </p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                  Quality Checked
+                </p>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
 
-          {/* Right Column: 3D Interactive Showcase Card */}
-          <div className="lg:col-span-5">
+          {/* ================= RIGHT RUNNING IMAGE CARD ================= */}
+          <div className="w-full md:col-span-6 lg:col-span-6 flex justify-center">
             <motion.div
-              variants={floatCardVariants}
-              initial="hidden"
-              animate="visible"
-              style={{ perspective: 1000 }}
-              className="relative mx-auto max-w-md lg:max-w-none"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
+              }}
+              className="relative w-full max-w-[540px] rounded-3xl border border-gray-200/80 bg-white p-3 sm:p-4 shadow-xl shadow-gray-200/50 transition-shadow duration-300"
             >
-              {/* Glow Behind Card */}
-              <div
-                className="absolute -inset-1.5 rounded-3xl opacity-40 blur-xl transition-all duration-500"
-                style={{
-                  background: `linear-gradient(135deg, ${PRIMARY}, ${ACCENT})`,
-                }}
-              />
-
-              <motion.div
-                style={{
-                  rotateX,
-                  rotateY,
-                  transformStyle: "preserve-3d",
-                }}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                className="relative overflow-hidden rounded-3xl border border-white/15 bg-gray-900/90 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:border-white/30"
-              >
-                {/* Showcase Image */}
-                <div className="relative h-80 sm:h-96 w-full overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=80"
-                    alt="Subani Fresh Food Products"
-                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              {/* Image Container with Slider */}
+              <div className="relative h-[280px] sm:h-[340px] md:h-[360px] lg:h-[380px] w-full overflow-hidden rounded-2xl bg-gray-900">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeCompany.id}
+                    src={activeCompany.image}
+                    alt={activeCompany.name}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.55, ease: "easeInOut" }}
+                    className="h-full w-full object-cover"
                   />
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.2) 60%, transparent 100%)",
-                    }}
+                </AnimatePresence>
+
+                {/* Subtle vignette gradient for text clarity */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+
+                {/* Top Left Badge Overlay */}
+                <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1 backdrop-blur-md border border-white/15 shadow-sm">
+                  <span
+                    className="h-2 w-2 rounded-full animate-pulse"
+                    style={{ backgroundColor: ACCENT }}
                   />
-
-                  {/* Top Floating Glass Badge */}
-                  <motion.div
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-4 left-4 flex items-center gap-2 rounded-xl border border-white/20 bg-black/60 px-3.5 py-2 text-xs font-bold text-white shadow-xl backdrop-blur-md"
-                  >
-                    <span
-                      className="flex h-2 w-2 rounded-full"
-                      style={{ backgroundColor: ACCENT }}
-                    />
-                    <Sparkles className="h-3.5 w-3.5" style={{ color: ACCENT }} />
-                    <span>Pure & Fresh Arrival</span>
-                  </motion.div>
-
-                  {/* Bottom Floating Glass Badge */}
-                  <motion.div
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute bottom-6 right-4 flex items-center gap-2 rounded-xl border border-white/20 bg-black/60 px-3.5 py-2 text-xs font-bold text-white shadow-xl backdrop-blur-md"
-                  >
-                    <CheckCircle2 className="h-4 w-4" style={{ color: "#22c55e" }} />
-                    <span>Strict Standards Passed</span>
-                  </motion.div>
+                  <span className="text-[11px] font-bold text-white tracking-wide">
+                    {activeCompany.badge}
+                  </span>
                 </div>
 
-                {/* Bottom Strip of Card */}
-                <div className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
-                        IFTAR FOOD INDUSTRIES
-                      </p>
-                      <h4 className="mt-1 text-lg font-extrabold text-white">
-                        Premium Food & Ingredients
-                      </h4>
-                    </div>
-                    <Link
-                      to="/products"
-                      className="flex h-10 w-10 items-center justify-center rounded-full text-gray-950 transition-transform hover:scale-110"
-                      style={{ backgroundColor: ACCENT }}
+                {/* Play / Pause Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition hover:bg-black/80 border border-white/15"
+                  aria-label={isPlaying ? "Pause autoplay" : "Start autoplay"}
+                >
+                  {isPlaying ? (
+                    <Pause className="h-3.5 w-3.5" />
+                  ) : (
+                    <Play className="h-3.5 w-3.5 ml-0.5 fill-white" />
+                  )}
+                </button>
+
+                {/* Bottom Glass Caption Bar */}
+                <div className="absolute bottom-3 left-3 right-3 z-10 rounded-xl border border-white/20 bg-black/60 p-3 sm:p-3.5 backdrop-blur-md shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-sm"
+                      style={{ backgroundColor: PRIMARY }}
                     >
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
+                      <IconComponent className="h-4 w-4 text-white" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-yellow-300 truncate">
+                        {activeCompany.tag}
+                      </p>
+                      <h3 className="text-sm sm:text-base font-extrabold text-white truncate drop-shadow">
+                        {activeCompany.name}
+                      </h3>
+                    </div>
                   </div>
                 </div>
 
-                {/* Split Bottom Accent */}
-                <div
-                  className="h-1.5 w-full"
-                  style={{
-                    background: `linear-gradient(90deg, ${PRIMARY} 50%, ${ACCENT} 50%)`,
-                  }}
-                />
-              </motion.div>
+                {/* Left / Right Carousel Controls */}
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 transition hover:bg-black/70 active:scale-95"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 transition hover:bg-black/70 active:scale-95"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Interactive Company Selection Pills */}
+              <div className="mt-3 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar pt-1">
+                {COMPANIES.map((item, idx) => {
+                  const isActive = idx === currentIndex;
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setCurrentIndex(idx)}
+                      className={`group flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-semibold transition-all ${
+                        isActive
+                          ? "bg-rose-50 text-rose-700 shadow-2xs border border-rose-200"
+                          : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 border border-transparent"
+                      }`}
+                      aria-label={`Select ${item.shortName}`}
+                    >
+                      <Icon
+                        className={`h-3 w-3 shrink-0 ${isActive ? "text-[#FF3D57]" : "text-gray-400 group-hover:text-gray-600"}`}
+                      />
+                      <span className="hidden sm:inline whitespace-nowrap">
+                        {item.shortName}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </motion.div>
           </div>
         </div>
