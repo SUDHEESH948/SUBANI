@@ -1,5 +1,4 @@
-﻿
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import {
   Phone,
   MapPin,
@@ -117,8 +116,7 @@ const KOOLATH_VENTURES = [
     subtitle: "Retail Mart & Daily Provisions",
     address: "Tirur Road, Chamravattom",
     phones: ["+91 75101 16699", "+91 75101 16688"],
-    mapQuery:
-      "Subani Koolath Supermarket, Tirur Road, Chamravattom, Kerala",
+    mapQuery: "Subani Koolath Supermarket, Tirur Road, Chamravattom, Kerala",
     icon: Store,
     accent: "#EA580C",
   },
@@ -137,12 +135,10 @@ export default function About() {
   return (
     <section className="min-h-screen bg-gray-50/50 px-6 py-16 sm:py-20 lg:px-8">
       <div className="mx-auto max-w-7xl">
-
         {/* =================================================
             HERO / INTRODUCTION
         ================================================= */}
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-
           {/* Text Content */}
           <motion.div
             initial="hidden"
@@ -153,10 +149,7 @@ export default function About() {
             }}
             variants={staggerContainer}
           >
-            <motion.div
-              variants={fadeInUp}
-              className="flex items-center gap-2"
-            >
+            <motion.div variants={fadeInUp} className="flex items-center gap-2">
               <span
                 className="text-xs font-bold uppercase tracking-[0.25em]"
                 style={{ color: PRIMARY }}
@@ -190,8 +183,8 @@ export default function About() {
               variants={fadeInUp}
               className="mt-6 text-base leading-8 text-gray-600"
             >
-              Welcome to <strong>Subani</strong>, your one-stop destination
-              for all your grocery and food provisions. At Subani, we pride
+              Welcome to <strong>Subani</strong>, your one-stop destination for
+              all your grocery and food provisions. At Subani, we pride
               ourselves on offering a wide range of high-quality products that
               cater to every customer&apos;s preferences and dietary
               requirements.
@@ -202,8 +195,8 @@ export default function About() {
               className="mt-4 text-base leading-8 text-gray-600"
             >
               Whether you&apos;re looking for fresh ingredients, pantry
-              essentials, or specialty items, our facilities are stocked with
-              an extensive selection to meet your demands. Backed by Iftar Food
+              essentials, or specialty items, our facilities are stocked with an
+              extensive selection to meet your demands. Backed by Iftar Food
               Industries and Koolath Group, Subani upholds a steadfast
               commitment to unmatched quality and service.
             </motion.p>
@@ -247,7 +240,6 @@ export default function About() {
 
             <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-3 shadow-2xl">
               <div className="relative h-96 w-full overflow-hidden rounded-2xl">
-
                 <img
                   src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80"
                   alt="Subani Fresh Market"
@@ -267,7 +259,6 @@ export default function About() {
                   className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-2xl border border-white/30 bg-black/60 p-4 text-white backdrop-blur-md"
                 >
                   <div className="flex items-center gap-3">
-
                     <div
                       className="flex h-10 w-10 items-center justify-center rounded-xl"
                       style={{
@@ -307,7 +298,6 @@ export default function About() {
             CORE VALUES
         ================================================= */}
         <div className="mt-24">
-
           <motion.div
             initial={{
               opacity: 0,
@@ -362,10 +352,7 @@ export default function About() {
                       color: PRIMARY,
                     }}
                   >
-                    <Icon
-                      className="h-6 w-6"
-                      strokeWidth={2.2}
-                    />
+                    <Icon className="h-6 w-6" strokeWidth={2.2} />
                   </div>
 
                   <h3 className="mt-4 text-base font-bold text-gray-900">
@@ -400,7 +387,6 @@ export default function About() {
           className="mt-24 overflow-hidden rounded-3xl border border-gray-200 bg-white p-6 shadow-md sm:p-8"
         >
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-
             <div>
               <span
                 className="text-xs font-extrabold uppercase tracking-widest"
@@ -414,16 +400,12 @@ export default function About() {
               </h3>
 
               <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-gray-700">
-                <MapPin
-                  className="h-4 w-4"
-                  style={{ color: PRIMARY }}
-                />
+                <MapPin className="h-4 w-4" style={{ color: PRIMARY }} />
                 Chamravattom, Malappuram, Kerala
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-
               <a
                 href="tel:9605777799"
                 className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-xs font-semibold text-white shadow transition hover:bg-black sm:text-sm"
@@ -436,10 +418,7 @@ export default function About() {
                 href="mailto:koolathgroup@gmail.com"
                 className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-800 transition hover:bg-gray-50 sm:text-sm"
               >
-                <Mail
-                  className="h-3.5 w-3.5"
-                  style={{ color: PRIMARY }}
-                />
+                <Mail className="h-3.5 w-3.5" style={{ color: PRIMARY }} />
                 koolathgroup@gmail.com
               </a>
 
@@ -453,9 +432,7 @@ export default function About() {
                 }}
               >
                 <MapPin className="h-3.5 w-3.5" />
-
                 Locate HQ
-
                 <ExternalLink className="ml-0.5 h-3 w-3" />
               </a>
             </div>
@@ -466,7 +443,6 @@ export default function About() {
             GROUP ENTERPRISES
         ================================================= */}
         <div className="mt-16">
-
           <motion.div
             initial={{
               opacity: 0,
@@ -496,8 +472,8 @@ export default function About() {
             </h2>
 
             <p className="mt-3 text-sm text-gray-600">
-              Direct access and navigation to each sister firm under the
-              Koolath banner.
+              Direct access and navigation to each sister firm under the Koolath
+              banner.
             </p>
           </motion.div>
 
@@ -506,7 +482,7 @@ export default function About() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+            className="mt-10 grid grid-cols-1 gap-6"
           >
             {KOOLATH_VENTURES.map((item, index) => {
               const VentureIcon = item.icon;
@@ -516,21 +492,17 @@ export default function About() {
                   key={index}
                   variants={fadeInUp}
                   whileHover={{
-                    y: -6,
-                    scale: 1.02,
+                    y: -4,
                   }}
                   transition={{
                     duration: 0.25,
                   }}
-                  className="group flex flex-col justify-between rounded-3xl border-2 border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-[#C8102E] hover:bg-[#FFF8D6] hover:shadow-xl"
+                  className="group w-full rounded-3xl border-2 border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#C8102E] hover:bg-[#FFF8D6] hover:shadow-xl sm:p-8"
                 >
-
                   {/* Card Content */}
                   <div>
-
                     {/* Header */}
                     <div className="flex items-center justify-between">
-
                       <div
                         className="flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 group-hover:bg-[#C8102E] group-hover:text-white"
                         style={{
@@ -591,14 +563,13 @@ export default function About() {
 
                   {/* Google Location */}
                   <div className="mt-6 border-t border-gray-100 pt-4 transition-colors duration-300 group-hover:border-[#C8102E]/20">
-
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        item.mapQuery
+                        item.mapQuery,
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group/location inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 py-2.5 text-xs font-bold text-gray-800 transition-all duration-300 hover:border-[#C8102E] hover:bg-[#C8102E] hover:text-white"
+                      className="group/location inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-6 py-2.5 text-xs font-bold text-gray-800 transition-all duration-300 hover:border-[#C8102E] hover:bg-[#C8102E] hover:text-white"
                     >
                       <MapPin className="h-3.5 w-3.5 text-red-500 transition-colors group-hover/location:text-white" />
 
@@ -701,8 +672,8 @@ export default function About() {
           </h2>
 
           <p className="mt-3 text-base text-gray-600">
-            Visit Subani today and experience quality, convenience, and
-            absolute freshness.
+            Visit Subani today and experience quality, convenience, and absolute
+            freshness.
           </p>
 
           <motion.a
@@ -716,8 +687,7 @@ export default function About() {
             className="mt-8 inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:shadow-xl"
             style={{
               backgroundColor: PRIMARY,
-              boxShadow:
-                "0 8px 20px -4px rgba(200, 16, 46, 0.45)",
+              boxShadow: "0 8px 20px -4px rgba(200, 16, 46, 0.45)",
             }}
           >
             <Phone
