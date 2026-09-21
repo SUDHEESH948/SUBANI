@@ -2,6 +2,13 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { ArrowUpRight, X, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 
+// Local Company Assets
+import millingLogo from "../assets/logo/milling.png";
+import enterLogo from "../assets/logo/enter.png";
+import iftarLogo from "../assets/logo/iftar.png";
+import marketLogo from "../assets/logo/market.png";
+import arLogo from "../assets/logo/ar.png";
+
 // Corporate Brand Constants & Split Accents
 const PRIMARY = "#C8102E"; // Brand Red
 const YELLOW = "#F4B400";  // Brand Yellow
@@ -9,54 +16,71 @@ const DARK = "#111827";
 
 const SPLIT_GRADIENT = `linear-gradient(90deg, ${PRIMARY} 0%, ${PRIMARY} 50%, ${YELLOW} 50%, ${YELLOW} 100%)`;
 
-const GALLERY_ITEMS = [
-  {
-    id: 1,
-    title: "Our Products",
-    category: "Food Products",
-    image:
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 2,
-    title: "Fresh Ingredients",
-    category: "Ingredients",
-    image:
-      "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 3,
-    title: "Quality Food",
-    category: "Quality",
-    image:
-      "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 4,
-    title: "Food Selection",
-    category: "Food Products",
-    image:
-      "https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 5,
-    title: "Premium Quality",
-    category: "Quality",
-    image:
-      "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 6,
-    title: "Our Operations",
-    category: "Operations",
-    image:
-      "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1000&q=80",
-  },
+// Venture Tabs Configuration
+export const VENTURE_TABS = [
+  "All",
+  "KOOLATH GROUP OF COMPANIES",
+  "SUBANI KOOLATH SUPERMARKET",
+  "IFTAR FOOD INDUSTRIES",
+  "ARCHEND BUILDERS",
+  "KOOLATH ENTERPRISES",
 ];
 
-const CATEGORIES = [
-  "All",
-  ...new Set(GALLERY_ITEMS.map((item) => item.category)),
+const GALLERY_ITEMS = [
+  // KOOLATH GROUP OF COMPANIES / MILLING
+  {
+    id: 1,
+    title: "Milling Line & Storage Hub",
+    category: "KOOLATH GROUP OF COMPANIES",
+    tagline: "KOOLATH MILLING CO.",
+    image: millingLogo,
+    isLogo: true,
+  },
+
+
+  // SUBANI KOOLATH SUPERMARKET
+  {
+    id: 3,
+    title: "Subani Supermarket Brand Identity",
+    category: "SUBANI KOOLATH SUPERMARKET",
+    tagline: "RETAIL & DAILY PROVISIONS",
+    image: marketLogo,
+    isLogo: true,
+  },
+  
+
+
+  // IFTAR FOOD INDUSTRIES
+  {
+    id: 6,
+    title: "Iftar Food Brand Emblem",
+    category: "IFTAR FOOD INDUSTRIES",
+    tagline: "IMPORTER & DISTRIBUTOR",
+    image: iftarLogo,
+    isLogo: true,
+  },
+  
+  // ARCHEND BUILDERS
+  {
+    id: 9,
+    title: "Archend Architecture & Builds",
+    category: "ARCHEND BUILDERS",
+    tagline: "BUILDERS & LUXURY EVENTS",
+    image: arLogo,
+    isLogo: true,
+  },
+  
+
+  // KOOLATH ENTERPRISES
+  {
+    id: 11,
+    title: "Koolath Enterprises Trading",
+    category: "KOOLATH ENTERPRISES",
+    tagline: "COMMERCIAL TRADING",
+    image: enterLogo,
+    isLogo: true,
+  },
+  
 ];
 
 const FALLBACK_IMAGE =
@@ -67,22 +91,22 @@ const gridVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.05,
+      staggerChildren: 0.08,
+      delayChildren: 0.04,
     },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 35, scale: 0.94 },
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
       type: "spring",
-      stiffness: 250,
-      damping: 22,
+      stiffness: 260,
+      damping: 24,
     },
   },
   exit: {
@@ -97,8 +121,8 @@ function GalleryCard({ item, onSelect }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const rotateX = useTransform(y, [-100, 100], [8, -8]);
-  const rotateY = useTransform(x, [-100, 100], [-8, 8]);
+  const rotateX = useTransform(y, [-100, 100], [6, -6]);
+  const rotateY = useTransform(x, [-100, 100], [-6, 6]);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -131,35 +155,52 @@ function GalleryCard({ item, onSelect }) {
         onClick={() => onSelect(item)}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="group relative h-full w-full cursor-pointer overflow-hidden rounded-3xl border border-gray-200/90 bg-gray-900 shadow-md transition-all duration-300 hover:border-red-200 hover:shadow-2xl"
+        className="group relative h-full w-full cursor-pointer overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-red-300 hover:shadow-2xl"
       >
-        <motion.img
-          src={item.image}
-          alt={item.title}
-          onError={(e) => {
-            e.currentTarget.src = FALLBACK_IMAGE;
-          }}
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-        />
-
+        {/* Background Image or Logo Presentation */}
         <div
-          className="pointer-events-none absolute inset-0 transition-opacity duration-500 group-hover:opacity-90"
+          className={`relative h-full w-full overflow-hidden ${
+            item.isLogo
+              ? "flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-8"
+              : "bg-gray-900"
+          }`}
+        >
+          <motion.img
+            src={item.image}
+            alt={item.title}
+            onError={(e) => {
+              e.currentTarget.src = FALLBACK_IMAGE;
+            }}
+            loading="lazy"
+            className={`${
+              item.isLogo
+                ? "max-h-40 max-w-[75%] object-contain drop-shadow-md transition-transform duration-500 ease-out group-hover:scale-110"
+                : "h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            }`}
+          />
+        </div>
+
+        {/* Gradient Overlay for Text Readability */}
+        <div
+          className="pointer-events-none absolute inset-0 transition-opacity duration-500 group-hover:opacity-95"
           style={{
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0.1) 100%)",
+            background: item.isLogo
+              ? "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.05) 100%)"
+              : "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.1) 100%)",
           }}
         />
 
+        {/* Accent Bar */}
         <div
           className="absolute bottom-0 left-0 h-1.5 w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
           style={{ background: SPLIT_GRADIENT }}
         />
 
+        {/* Card Overlay Content */}
         <div className="absolute inset-0 flex flex-col justify-between p-6">
           <div className="flex items-center justify-between">
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-1"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider shadow-md backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-1"
               style={{
                 backgroundColor: "rgba(255, 255, 255, 0.95)",
                 color: PRIMARY,
@@ -172,20 +213,20 @@ function GalleryCard({ item, onSelect }) {
 
           <div className="flex items-end justify-between gap-4">
             <div className="transform transition-transform duration-300 ease-out group-hover:-translate-y-1">
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-gray-300">
-                IFTAR COLLECTION
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">
+                {item.tagline}
               </span>
-              <h3 className="mt-1 text-2xl font-black tracking-tight text-white transition-colors group-hover:text-yellow-400">
+              <h3 className="mt-1 text-xl font-black tracking-tight text-white transition-colors group-hover:text-yellow-400 sm:text-2xl">
                 {item.title}
               </h3>
             </div>
 
-            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-xl transition-all duration-300 group-hover:scale-110">
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-xl transition-all duration-300 group-hover:scale-110">
               <div
                 className="absolute inset-0 translate-y-full transition-transform duration-300 ease-out group-hover:translate-y-0"
                 style={{ background: SPLIT_GRADIENT }}
               />
-              <ArrowUpRight className="relative z-10 h-5 w-5 text-gray-900 transition-colors duration-300 group-hover:text-white" />
+              <ArrowUpRight className="relative z-10 h-4 w-4 text-gray-900 transition-colors duration-300 group-hover:text-white" />
             </div>
           </div>
         </div>
@@ -259,7 +300,7 @@ export default function Gallery() {
 
   const handleScroll = (direction) => {
     if (navContainerRef.current) {
-      const scrollAmount = direction === "left" ? -220 : 220;
+      const scrollAmount = direction === "left" ? -260 : 260;
       navContainerRef.current.scrollBy({
         left: scrollAmount,
         behavior: "smooth",
@@ -283,7 +324,7 @@ export default function Gallery() {
               className="text-xs font-bold uppercase tracking-[0.25em]"
               style={{ color: PRIMARY }}
             >
-              IFTAR FOOD INDUSTRIES
+              KOOLATH GROUP VENTURES
             </span>
             <span
               className="h-1.5 w-1.5 rounded-full"
@@ -298,7 +339,7 @@ export default function Gallery() {
             transition={{ delay: 0.1, duration: 0.6 }}
             className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl md:text-5xl"
           >
-            Explore Our <span style={{ color: PRIMARY }}>Gallery</span>
+            Group Portfolio & <span style={{ color: PRIMARY }}>Gallery</span>
           </motion.h1>
 
           <motion.p
@@ -308,8 +349,8 @@ export default function Gallery() {
             transition={{ delay: 0.15, duration: 0.6 }}
             className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-7"
           >
-            Explore our food products, fresh ingredients, quality standards,
-            operations, and the dedication behind our brand.
+            Explore our supermarket aisles, automated grain milling infrastructure,
+            commercial trade distribution, and architectural divisions.
           </motion.p>
 
           <motion.div
@@ -322,8 +363,8 @@ export default function Gallery() {
           />
         </div>
 
-        {/* Responsive Navigation With Arrows */}
-        <div className="relative mx-auto mt-8 flex max-w-4xl items-center justify-center sm:mt-10">
+        {/* Venture Navigation Tabs With Scroll Arrows */}
+        <div className="relative mx-auto mt-8 flex max-w-5xl items-center justify-center sm:mt-10">
           <motion.button
             type="button"
             onClick={() => handleScroll("left")}
@@ -335,7 +376,7 @@ export default function Gallery() {
                 ? "cursor-not-allowed opacity-30"
                 : "hover:border-red-200 hover:text-red-600 hover:shadow-md"
             }`}
-            aria-label="Scroll Categories Left"
+            aria-label="Scroll Tabs Left"
           >
             <ChevronLeft className="h-4 w-4" />
           </motion.button>
@@ -345,14 +386,14 @@ export default function Gallery() {
             onScroll={checkScrollability}
             className="flex items-center gap-2 overflow-x-auto px-2 py-2 no-scrollbar sm:gap-2.5"
           >
-            {CATEGORIES.map((category) => {
-              const isActive = selectedCategory === category;
+            {VENTURE_TABS.map((tab) => {
+              const isActive = selectedCategory === tab;
 
               return (
                 <button
-                  key={category}
+                  key={tab}
                   type="button"
-                  onClick={() => setSelectedCategory(category)}
+                  onClick={() => setSelectedCategory(tab)}
                   className="relative shrink-0 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors duration-200 focus:outline-none sm:px-5 sm:py-2.5"
                   style={{
                     color: isActive ? "#FFFFFF" : DARK,
@@ -379,7 +420,7 @@ export default function Gallery() {
                   )}
 
                   <span className="relative z-10 flex items-center gap-2 whitespace-nowrap">
-                    {category}
+                    {tab}
                     {isActive && (
                       <motion.span
                         layoutId="activeGalleryDot"
@@ -407,7 +448,7 @@ export default function Gallery() {
                 ? "cursor-not-allowed opacity-30"
                 : "hover:border-red-200 hover:text-red-600 hover:shadow-md"
             }`}
-            aria-label="Scroll Categories Right"
+            aria-label="Scroll Tabs Right"
           >
             <ChevronRight className="h-4 w-4" />
           </motion.button>
@@ -428,7 +469,7 @@ export default function Gallery() {
           </AnimatePresence>
         </motion.div>
 
-        {/* Lightbox Modal with Next, Prev, Keyboard Nav & Animated Transition */}
+        {/* Lightbox Modal */}
         <AnimatePresence>
           {activeItem && (
             <motion.div
@@ -450,44 +491,46 @@ export default function Gallery() {
                 <button
                   type="button"
                   onClick={() => setActiveItem(null)}
-                  className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-black hover:scale-110"
-                  aria-label="Close gallery"
+                  className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-black"
+                  aria-label="Close modal"
                 >
                   <X className="h-5 w-5" />
                 </button>
 
-                {/* Left Navigation Arrow */}
+                {/* Navigation Arrows */}
                 {filteredItems.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrev();
-                    }}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-black hover:scale-110"
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrev();
+                      }}
+                      className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-black"
+                      aria-label="Previous item"
+                    >
+                      <ChevronLeft className="h-6 w-6" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNext();
+                      }}
+                      className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-black"
+                      aria-label="Next item"
+                    >
+                      <ChevronRight className="h-6 w-6" />
+                    </button>
+                  </>
                 )}
 
-                {/* Right Navigation Arrow */}
-                {filteredItems.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNext();
-                    }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-black hover:scale-110"
-                    aria-label="Next image"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
-                )}
-
-                {/* Modal Image with AnimatePresence */}
-                <div className="relative max-h-[60vh] sm:max-h-[65vh] w-full overflow-hidden bg-black">
+                {/* Modal View */}
+                <div
+                  className={`relative flex max-h-[60vh] w-full items-center justify-center sm:max-h-[65vh] ${
+                    activeItem.isLogo ? "bg-gray-100 p-8" : "bg-black"
+                  }`}
+                >
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={activeItem.id}
@@ -500,12 +543,16 @@ export default function Gallery() {
                       onError={(e) => {
                         e.currentTarget.src = FALLBACK_IMAGE;
                       }}
-                      className="max-h-[60vh] w-full object-contain sm:max-h-[65vh]"
+                      className={`max-h-[60vh] sm:max-h-[65vh] ${
+                        activeItem.isLogo
+                          ? "max-w-[80%] object-contain"
+                          : "w-full object-contain"
+                      }`}
                     />
                   </AnimatePresence>
                 </div>
 
-                {/* Modal Content */}
+                {/* Modal Content Details */}
                 <div className="p-6 sm:p-8">
                   <div className="flex items-center justify-between">
                     <span
@@ -518,7 +565,6 @@ export default function Gallery() {
                       {activeItem.category}
                     </span>
 
-                    {/* Counter Indicator */}
                     {activeIndex >= 0 && (
                       <span className="text-xs font-semibold text-gray-400">
                         {activeIndex + 1} / {filteredItems.length}
