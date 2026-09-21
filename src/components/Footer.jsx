@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowUp, MapPin, Phone, Mail } from "lucide-react";
 import logo from "../assets/subani.png";
 
@@ -43,8 +43,9 @@ function Footer() {
               />
             </Link>
             <p className="mt-4 text-xs leading-relaxed text-gray-400">
-              A trusted subsidiary of Iftar Food Industries, dedicated to delivering
-              premium grocery provisions, fresh ingredients, and exceptional customer service.
+              A trusted subsidiary of Iftar Food Industries, dedicated to
+              delivering premium grocery provisions, fresh ingredients, and
+              exceptional customer service.
             </p>
 
             <div className="mt-6 flex items-center gap-3">
@@ -90,7 +91,10 @@ function Footer() {
             <div className="mt-4 space-y-2.5 text-xs leading-relaxed text-gray-400">
               <p className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-red-500" />
-                <span>Pump House Road, Perunthallur PO, VP Puram, Tirur, Malappuram (Dist), Kerala - 676102</span>
+                <span>
+                  Pump House Road, Perunthallur PO, VP Puram, Tirur, Malappuram
+                  (Dist), Kerala - 676102
+                </span>
               </p>
 
               <p className="flex items-center gap-2 pt-1">
@@ -98,10 +102,10 @@ function Footer() {
                 <span>
                   Phone:{" "}
                   <a
-                    href="tel:7510116699"
+                    href="tel:7510116688"
                     className="font-bold text-white transition hover:text-yellow-400"
                   >
-                    +91 75101 16699
+                    +91 75101 16688
                   </a>
                 </span>
               </p>
@@ -125,12 +129,13 @@ function Footer() {
             </h3>
 
             <div className="mt-4 space-y-2.5 text-xs leading-relaxed text-gray-400">
-              <p className="font-semibold text-gray-200">
-                KOOLATH SUPERMARKET
-              </p>
+              <p className="font-semibold text-gray-200">KOOLATH SUPERMARKET</p>
               <p className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-red-500" />
-                <span>Tirur Road, Chamravattom PO, Tirur, Malappuram Dist, Kerala - 676102</span>
+                <span>
+                  Tirur Road, Chamravattom PO, Tirur, Malappuram Dist, Kerala -
+                  676102
+                </span>
               </p>
 
               <p className="flex items-center gap-2 pt-1">
@@ -152,8 +157,8 @@ function Footer() {
         {/* Bottom Bar with Copyright & Back to Top */}
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-between border-t border-gray-800 pt-6 gap-4 text-xs text-gray-500">
           <p>
-            © {new Date().getFullYear()} SUBANI (Iftar Food Industries). All rights reserved.{" "}
-            <span className="mx-2 hidden sm:inline">|</span>
+            © {new Date().getFullYear()} SUBANI (Iftar Food Industries). All
+            rights reserved. <span className="mx-2 hidden sm:inline">|</span>
             <span className="block sm:inline mt-1 sm:mt-0">
               Designed &amp; Developed by{" "}
               <a

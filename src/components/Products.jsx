@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  MessageCircle,
 } from "lucide-react";
 
 // Corporate Brand Colors
@@ -31,7 +32,9 @@ const PRODUCT_NAMES = {
   avilose: "Traditional Avilose Podi",
   chilly: "Pure Red Chilly Powder",
   driedchilly: "Sun-Dried Red Chilly",
+  ggpowder: "Green Gram Powder",
   gingelly: "Pure Gingelly Sesame Oil",
+  gingellyoil: "Pure Gingelly Oil",
   green: "Selected Green Gram",
   kadalamavu: "Pure Kadalamavu (Gram Flour)",
   kchilly: "Kashmiri Chilly Powder",
@@ -42,7 +45,10 @@ const PRODUCT_NAMES = {
   puttu: "Premium White Puttu Podi",
   ragi: "Healthy Ragi Flour",
   ragiputtu: "Special Ragi Puttu Podi",
+  rmallypowder: "Roasted Mally Powder",
   sp: "Special Biriyani Spices",
+  srputtupodi: "Steamed Ragi Puttu Podi",
+  swputtu: "Steamed Wheat Puttu Podi",
   turmeric: "Golden Pure Turmeric Powder",
   wcoriander: "Whole Coriander Seeds",
   wheatputtu: "Pure Wheat Puttu Podi",
@@ -67,7 +73,8 @@ function getCategory(key) {
     key.includes("pathiri") ||
     key.includes("atta") ||
     key.includes("ragi") ||
-    key.includes("kadala")
+    key.includes("kadala") ||
+    key.includes("ggpowder")
   ) {
     return "Flours & Podi";
   }
@@ -97,9 +104,46 @@ function formatTitleFromFilename(filepath) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+// Map old generic filenames superseded by new specific product additions
+const SUPERSEDED_KEYS = {
+  green: "ggpowder",
+  mally: "rmallypowder",
+  ragiputtu: "srputtupodi",
+  wheatputtu: "swputtu",
+  gingelly: "gingellyoil",
+};
+
+const rawImageEntries = Object.entries(imageModules);
+const existingCleanKeys = new Set(
+  rawImageEntries.map(
+    ([path]) =>
+      path
+        .split("/")
+        .pop()
+        ?.replace(/\.[^/.]+$/, "")
+        .toLowerCase() ?? "",
+  ),
+);
+
 // 2. Transform the glob record into the product list
-export const PRODUCTS = Object.entries(imageModules).map(
-  ([path, module], index) => {
+export const PRODUCTS = rawImageEntries
+  .filter(([path]) => {
+    const cleanKey =
+      path
+        .split("/")
+        .pop()
+        ?.replace(/\.[^/.]+$/, "")
+        .toLowerCase() ?? "";
+    // If this is an older generic duplicate and the new specific version is present, skip the duplicate
+    if (
+      SUPERSEDED_KEYS[cleanKey] &&
+      existingCleanKeys.has(SUPERSEDED_KEYS[cleanKey])
+    ) {
+      return false;
+    }
+    return true;
+  })
+  .map(([path, module], index) => {
     const name = formatTitleFromFilename(path);
     const cleanKey =
       path
@@ -115,6 +159,8 @@ export const PRODUCTS = Object.entries(imageModules).map(
       path.toLowerCase().includes("iftar");
 
     const brand = isIftar ? "IFTAR FOOD INDUSTRIES" : "KOOLATH MILLING COMPANY";
+    const whatsapp = isIftar ? "917510116688" : "917510116699";
+    const phone = isIftar ? "+91 75101 16688" : "+91 75101 16699";
 
     const description = isIftar
       ? `High-quality ${name.toLowerCase()} manufactured and packed by Iftar Food Industries under certified hygienic standards.`
@@ -125,14 +171,15 @@ export const PRODUCTS = Object.entries(imageModules).map(
       name,
       brand,
       category,
+      whatsapp,
+      phone,
       image: module.default,
       description,
       specs: ["100% Pure", "Quality Checked", "Hygienically Packed"],
       price: "Available on Request",
       href: "/products",
     };
-  },
-);
+  });
 
 const gridVariants = {
   hidden: { opacity: 0 },
@@ -266,7 +313,7 @@ function ProductCard({ product, onView }) {
         </div>
       </div>
 
-      {/* Card Footer with Details Link */}
+      {/* Card Footer with Pricing & Action Buttons */}
       <div className="mt-5 flex items-center justify-between border-t border-gray-100 px-5 py-3.5">
         <div>
           <span className="block text-[9px] font-bold uppercase tracking-wider text-gray-400">
@@ -277,15 +324,41 @@ function ProductCard({ product, onView }) {
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => onView(product)}
-          className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-[0.97]"
-          style={{ backgroundColor: PRIMARY }}
-        >
-          <span>View Details</span>
-          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onView(product)}
+            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-2 text-xs font-bold text-gray-700 shadow-2xs transition-all duration-200 hover:border-red-200 hover:bg-gray-50 active:scale-[0.97]"
+            title="View product image"
+          >
+            <Eye className="h-3.5 w-3.5 text-gray-500" />
+            <span className="hidden sm:inline">View</span>
+          </button>
+
+          <a
+            href={`https://wa.me/${
+              product.whatsapp ||
+              (product.brand === "IFTAR FOOD INDUSTRIES"
+                ? "917510116688"
+                : "917510116699")
+            }?text=${encodeURIComponent(
+              `Hello ${product.brand}, I would like to inquire about "${product.name}". Please share bulk pricing and specifications.`,
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-[0.97]"
+            style={{ backgroundColor: PRIMARY }}
+            title={`Inquire on WhatsApp (+91 ${
+              product.brand === "IFTAR FOOD INDUSTRIES"
+                ? "75101 16688"
+                : "75101 16699"
+            })`}
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            <span>Inquire</span>
+            <ArrowUpRight className="h-3 w-3" />
+          </a>
+        </div>
       </div>
     </motion.article>
   );
@@ -294,11 +367,61 @@ function ProductCard({ product, onView }) {
 export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [activeProduct, setActiveProduct] = useState(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const navContainerRef = useRef(null);
 
   const categories = [
     "All",
     ...Array.from(new Set(PRODUCTS.map((product) => product.category))),
   ];
+
+  const checkScrollability = () => {
+    if (navContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = navContainerRef.current;
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    checkScrollability();
+    const handleResize = () => checkScrollability();
+    window.addEventListener("resize", handleResize);
+    const timer = setTimeout(checkScrollability, 150);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
+    };
+  }, [categories.length]);
+
+  const handleCategoryScroll = (direction) => {
+    if (navContainerRef.current) {
+      const scrollAmount = direction === "left" ? -220 : 220;
+      navContainerRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+      setTimeout(checkScrollability, 300);
+    }
+  };
+
+  const selectCategory = (category, btnElement) => {
+    setSelectedCategory(category);
+    if (navContainerRef.current && btnElement) {
+      const container = navContainerRef.current;
+      const scrollLeft =
+        btnElement.offsetLeft -
+        container.offsetLeft -
+        container.clientWidth / 2 +
+        btnElement.clientWidth / 2;
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: "smooth",
+      });
+      setTimeout(checkScrollability, 300);
+    }
+  };
 
   const filteredProducts =
     selectedCategory === "All"
@@ -397,48 +520,86 @@ export default function Products() {
             quality, authentic taste, and verified purity to your doorstep.
           </p>
 
-          {/* Category Filter with Animated Indicator */}
-          <div className="mt-8 flex flex-wrap justify-center gap-2">
-            {categories.map((category) => {
-              const isActive = selectedCategory === category;
+          {/* Category Filter with Single-Line Horizontal Scroll and Arrow Buttons */}
+          <div className="relative mx-auto mt-8 flex max-w-4xl items-center justify-center px-1 sm:px-2">
+            <motion.button
+              type="button"
+              onClick={() => handleCategoryScroll("left")}
+              disabled={!canScrollLeft}
+              whileHover={{ scale: canScrollLeft ? 1.1 : 1 }}
+              whileTap={{ scale: canScrollLeft ? 0.92 : 1 }}
+              className={`mr-1.5 sm:mr-2 flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm transition-all duration-200 ${
+                !canScrollLeft
+                  ? "cursor-not-allowed opacity-25 pointer-events-none"
+                  : "hover:border-red-200 hover:text-red-600 hover:shadow-md cursor-pointer active:bg-gray-50"
+              }`}
+              aria-label="Scroll Categories Left"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </motion.button>
 
-              return (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => setSelectedCategory(category)}
-                  className="relative rounded-full px-5 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-200 focus:outline-none"
-                  style={{
-                    color: isActive ? "#FFFFFF" : DARK,
-                  }}
-                >
-                  {isActive ? (
-                    <motion.div
-                      layoutId="homeProductActiveTab"
-                      className="absolute inset-0 rounded-full shadow-md"
-                      style={{ backgroundColor: PRIMARY }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 450,
-                        damping: 35,
-                      }}
-                    />
-                  ) : (
-                    <div className="absolute inset-0 rounded-full border border-gray-200 bg-white transition-colors hover:border-red-200 hover:bg-gray-50" />
-                  )}
+            <div
+              ref={navContainerRef}
+              onScroll={checkScrollability}
+              className="flex items-center gap-2 overflow-x-auto px-1 sm:px-2 py-2 no-scrollbar scroll-smooth"
+            >
+              {categories.map((category) => {
+                const isActive = selectedCategory === category;
 
-                  <span className="relative z-10 flex items-center gap-2">
-                    {category}
-                    {isActive && (
-                      <span
-                        className="h-1.5 w-1.5 rounded-full"
-                        style={{ backgroundColor: ACCENT }}
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={(e) => selectCategory(category, e.currentTarget)}
+                    className="relative shrink-0 whitespace-nowrap rounded-full px-5 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-200 focus:outline-none"
+                    style={{
+                      color: isActive ? "#FFFFFF" : DARK,
+                    }}
+                  >
+                    {isActive ? (
+                      <motion.div
+                        layoutId="homeProductActiveTab"
+                        className="absolute inset-0 rounded-full shadow-md"
+                        style={{ backgroundColor: PRIMARY }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 450,
+                          damping: 35,
+                        }}
                       />
+                    ) : (
+                      <div className="absolute inset-0 rounded-full border border-gray-200 bg-white transition-colors hover:border-red-200 hover:bg-gray-50" />
                     )}
-                  </span>
-                </button>
-              );
-            })}
+
+                    <span className="relative z-10 flex items-center gap-2">
+                      {category}
+                      {isActive && (
+                        <span
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ backgroundColor: ACCENT }}
+                        />
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <motion.button
+              type="button"
+              onClick={() => handleCategoryScroll("right")}
+              disabled={!canScrollRight}
+              whileHover={{ scale: canScrollRight ? 1.1 : 1 }}
+              whileTap={{ scale: canScrollRight ? 0.92 : 1 }}
+              className={`ml-1.5 sm:ml-2 flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm transition-all duration-200 ${
+                !canScrollRight
+                  ? "cursor-not-allowed opacity-25 pointer-events-none"
+                  : "hover:border-red-200 hover:text-red-600 hover:shadow-md cursor-pointer active:bg-gray-50"
+              }`}
+              aria-label="Scroll Categories Right"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </motion.button>
           </div>
         </motion.div>
 
@@ -595,15 +756,27 @@ export default function Products() {
                     </span>
 
                     <a
-                      href={`https://wa.me/917510116699?text=${encodeURIComponent(
-                        `Hello, I would like to inquire about ${activeProduct.name} from ${activeProduct.brand}.`,
+                      href={`https://wa.me/${
+                        activeProduct.whatsapp ||
+                        (activeProduct.brand === "IFTAR FOOD INDUSTRIES"
+                          ? "917510116688"
+                          : "917510116699")
+                      }?text=${encodeURIComponent(
+                        `Hello ${activeProduct.brand}, I would like to inquire about "${activeProduct.name}". Please share product specifications and bulk pricing.`,
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:shadow-md hover:scale-105 active:scale-95"
                       style={{ backgroundColor: PRIMARY }}
                     >
-                      <span>Inquire on WhatsApp</span>
+                      <MessageCircle className="h-4 w-4" />
+                      <span>
+                        Inquire on WhatsApp (+91{" "}
+                        {activeProduct.brand === "IFTAR FOOD INDUSTRIES"
+                          ? "75101 16688"
+                          : "75101 16699"}
+                        )
+                      </span>
                       <ArrowUpRight className="h-4 w-4" />
                     </a>
                   </div>

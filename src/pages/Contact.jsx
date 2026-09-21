@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   MapPin,
@@ -14,12 +14,12 @@ import {
 
 // Corporate Brand Constants
 const PRIMARY = "#C8102E"; // Corporate Red
-const ACCENT = "#F4B400";  // Corporate Yellow / Gold
+const ACCENT = "#F4B400"; // Corporate Yellow / Gold
 
 const COMPANY_NAME = "IFTAR FOOD INDUSTRIES";
 const COMPANY_EMAIL = "contact@iftarfoodindustries.com";
-const PHONE_NUMBER = "+91 75101 16699";
-const WHATSAPP_NUMBER = "917510116699";
+const PHONE_NUMBER = "+91 75101 16688";
+const WHATSAPP_NUMBER = "917510116688";
 
 const COMPANY_ADDRESS = [
   "Pump House Road",
@@ -70,7 +70,7 @@ ${formData.message}
     `.trim();
 
     const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      whatsappMessage
+      whatsappMessage,
     )}`;
 
     setTimeout(() => {
@@ -120,8 +120,8 @@ ${formData.message}
             transition={{ duration: 0.6, delay: 0.15 }}
             className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600"
           >
-            Have a question, bulk order requirement, or distributorship proposal?
-            Our team is here to assist you promptly.
+            Have a question, bulk order requirement, or distributorship
+            proposal? Our team is here to assist you promptly.
           </motion.p>
 
           <div
@@ -143,11 +143,7 @@ ${formData.message}
             className="flex flex-col justify-between rounded-3xl bg-gray-900 p-8 text-white shadow-xl lg:col-span-2"
           >
             <div>
-              <div className="flex items-center justify-between">
-                
-
-                
-              </div>
+              <div className="flex items-center justify-between"></div>
 
               <h2 className="mt-6 text-2xl font-black tracking-tight">
                 {COMPANY_NAME}
@@ -158,8 +154,9 @@ ${formData.message}
               </p>
 
               <p className="mt-4 text-sm leading-6 text-gray-300">
-                Supplying premium quality food products with consistent freshness,
-                hygiene standards, and reliable supply chains across Kerala and beyond.
+                Supplying premium quality food products with consistent
+                freshness, hygiene standards, and reliable supply chains across
+                Kerala and beyond.
               </p>
 
               <div className="mt-8 space-y-6">
@@ -285,7 +282,8 @@ ${formData.message}
                 Send an Enquiry
               </h2>
               <p className="mt-1.5 text-sm text-gray-500">
-                Complete the details below to dispatch your message directly to our sales and operations team.
+                Complete the details below to dispatch your message directly to
+                our sales and operations team.
               </p>
             </div>
 
@@ -382,7 +380,8 @@ ${formData.message}
                   htmlFor="message"
                   className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700"
                 >
-                  Your Message / Specifications <span className="text-red-600">*</span>
+                  Your Message / Specifications{" "}
+                  <span className="text-red-600">*</span>
                 </label>
                 <textarea
                   id="message"
@@ -411,7 +410,8 @@ ${formData.message}
 
               {submitted && (
                 <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-center text-xs font-semibold text-emerald-800">
-                  Enquiry opened in WhatsApp. Our team will get back to you shortly!
+                  Enquiry opened in WhatsApp. Our team will get back to you
+                  shortly!
                 </div>
               )}
 

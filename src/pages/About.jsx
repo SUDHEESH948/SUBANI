@@ -1,4 +1,4 @@
-﻿import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Phone,
   MapPin,
@@ -14,6 +14,13 @@ import {
   ExternalLink,
 } from "lucide-react";
 import brandLogo from "../assets/subani.png";
+
+// Company Brand Assets
+import millingLogo from "../assets/logo/milling.png";
+import enterLogo from "../assets/logo/enter.png";
+import iftarLogo from "../assets/logo/iftar.png";
+import marketLogo from "../assets/logo/market.png";
+import arLogo from "../assets/logo/ar.png";
 
 // Corporate Brand Constants
 const PRIMARY = "#ff3d57";
@@ -90,44 +97,49 @@ const KOOLATH_VENTURES = [
       "Koolath Milling Company, Pump House Road, Perunthallur, Tirur, Kerala",
     icon: Factory,
     accent: "#C8102E",
+    image: millingLogo,
   },
   {
     name: "Koolath Enterprises",
     subtitle: "Commercial Trading & Bulk Distribution",
     address: "Pump House Road, Perunthallur",
-    phones: ["+91 96056 60888"],
+    phones: ["+91 96057 77799"],
     mapQuery:
       "Koolath Enterprises, Pump House Road, Perunthallur, Tirur, Kerala",
     icon: Building2,
     accent: "#0284C7",
+    image: enterLogo,
   },
   {
     name: "Iftar Food Industries",
     subtitle: "Importer & Distributor",
     address: "Pump House Road, Perunthallur",
-    phones: ["+91 96057 77799"],
+    phones: ["+91 75101 16688"],
     mapQuery:
       "Iftar Food Industries, Pump House Road, Perunthallur, Tirur, Kerala",
     icon: Award,
     accent: "#059669",
+    image: iftarLogo,
   },
   {
     name: "Subani Koolath Supermarket",
     subtitle: "Retail Mart & Daily Provisions",
     address: "Tirur Road, Chamravattom",
-    phones: ["+91 75101 16699", "+91 75101 16688"],
+    phones: ["+91 75101 16699"],
     mapQuery: "Subani Koolath Supermarket, Tirur Road, Chamravattom, Kerala",
     icon: Store,
     accent: "#EA580C",
+    image: marketLogo,
   },
   {
     name: "Archend Builders & Events",
     subtitle: "Architectural Construction & Luxury Events",
     address: "Opp. GUP School, Chamravattom",
-    phones: ["+91 97460 91508"],
+    phones: ["+91 95393 03954"],
     mapQuery: "GUP School Chamravattom, Kerala",
     icon: Compass,
     accent: "#7C3AED",
+    image: arLogo,
   },
 ];
 
@@ -440,7 +452,7 @@ export default function About() {
         </motion.div>
 
         {/* =================================================
-            GROUP ENTERPRISES
+            GROUP ENTERPRISES (WITH VENTURE LOGOS)
         ================================================= */}
         <div className="mt-16">
           <motion.div
@@ -482,7 +494,7 @@ export default function About() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="mt-10 grid grid-cols-1 gap-6"
+            className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
           >
             {KOOLATH_VENTURES.map((item, index) => {
               const VentureIcon = item.icon;
@@ -492,91 +504,98 @@ export default function About() {
                   key={index}
                   variants={fadeInUp}
                   whileHover={{
-                    y: -4,
+                    y: -6,
                   }}
                   transition={{
                     duration: 0.25,
                   }}
-                  className="group w-full rounded-3xl border-2 border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#C8102E] hover:bg-[#FFF8D6] hover:shadow-xl sm:p-8"
+                  className="group flex flex-col justify-between overflow-hidden rounded-3xl border-2 border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-[#C8102E] hover:shadow-2xl"
                 >
-                  {/* Card Content */}
-                  <div>
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <div
-                        className="flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 group-hover:bg-[#C8102E] group-hover:text-white"
-                        style={{
-                          backgroundColor: `${item.accent}15`,
-                          color: item.accent,
-                        }}
-                      >
-                        <VentureIcon className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
-                      </div>
+                  {/* Top Image Banner - Brand Logo Presentation */}
+                  <div className="relative flex h-52 w-full items-center justify-center overflow-hidden border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white p-6">
+                    <img
+                      src={item.image}
+                      alt={`${item.name} Logo`}
+                      className="max-h-full max-w-[80%] object-contain transition-transform duration-500 ease-out group-hover:scale-110"
+                      loading="lazy"
+                    />
 
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 transition-colors duration-300 group-hover:text-[#C8102E]">
-                        Venture #{index + 1}
-                      </span>
-                    </div>
-
-                    {/* Company Name */}
-                    <h3 className="mt-5 text-lg font-black text-gray-900 transition-colors duration-300 group-hover:text-[#C8102E]">
-                      {item.name}
-                    </h3>
-
-                    {/* Sector */}
-                    <p
-                      className="mt-0.5 text-xs font-semibold"
-                      style={{
-                        color: item.accent,
-                      }}
-                    >
-                      {item.subtitle}
-                    </p>
-
-                    {/* Address */}
-                    <div className="mt-4 flex items-start gap-2 text-xs text-gray-600">
-                      <MapPin
-                        className="mt-0.5 h-4 w-4 shrink-0"
-                        style={{
-                          color: PRIMARY,
-                        }}
-                      />
-
-                      <span>{item.address}</span>
-                    </div>
-
-                    {/* Phone Numbers */}
-                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-gray-800">
-                      {item.phones.map((phone, pIdx) => (
-                        <a
-                          key={pIdx}
-                          href={`tel:${phone.replace(/\s+/g, "")}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 transition-all duration-300 hover:border-[#C8102E] hover:bg-white"
-                        >
-                          <Phone className="h-3 w-3 text-gray-500 transition-colors group-hover:text-[#C8102E]" />
-
-                          <span>{phone}</span>
-                        </a>
-                      ))}
+                    {/* Badge */}
+                    <div className="absolute top-3 right-3 rounded-full border border-gray-200 bg-white/95 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-gray-700 shadow-sm backdrop-blur-md">
+                      Venture #{index + 1}
                     </div>
                   </div>
 
-                  {/* Google Location */}
-                  <div className="mt-6 border-t border-gray-100 pt-4 transition-colors duration-300 group-hover:border-[#C8102E]/20">
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        item.mapQuery,
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/location inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-6 py-2.5 text-xs font-bold text-gray-800 transition-all duration-300 hover:border-[#C8102E] hover:bg-[#C8102E] hover:text-white"
-                    >
-                      <MapPin className="h-3.5 w-3.5 text-red-500 transition-colors group-hover/location:text-white" />
+                  {/* Card Body */}
+                  <div className="flex flex-1 flex-col justify-between p-6">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-[#C8102E] group-hover:text-white"
+                          style={{
+                            backgroundColor: `${item.accent}15`,
+                            color: item.accent,
+                          }}
+                        >
+                          <VentureIcon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+                        </div>
 
-                      <span>View Google Location</span>
+                        <div>
+                          <h3 className="text-base font-black text-gray-900 transition-colors duration-300 group-hover:text-[#C8102E]">
+                            {item.name}
+                          </h3>
+                          <p
+                            className="text-xs font-semibold"
+                            style={{
+                              color: item.accent,
+                            }}
+                          >
+                            {item.subtitle}
+                          </p>
+                        </div>
+                      </div>
 
-                      <ExternalLink className="h-3 w-3 opacity-60 transition-opacity group-hover/location:opacity-100" />
-                    </a>
+                      {/* Address */}
+                      <div className="mt-4 flex items-start gap-2 text-xs text-gray-600">
+                        <MapPin
+                          className="mt-0.5 h-4 w-4 shrink-0"
+                          style={{
+                            color: PRIMARY,
+                          }}
+                        />
+                        <span>{item.address}</span>
+                      </div>
+
+                      {/* Phone Numbers */}
+                      <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-gray-800">
+                        {item.phones.map((phone, pIdx) => (
+                          <a
+                            key={pIdx}
+                            href={`tel:${phone.replace(/\s+/g, "")}`}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 transition-all duration-300 hover:border-[#C8102E] hover:bg-white"
+                          >
+                            <Phone className="h-3 w-3 text-gray-500 transition-colors group-hover:text-[#C8102E]" />
+                            <span>{phone}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Google Location Link */}
+                    <div className="mt-6 border-t border-gray-100 pt-4">
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          item.mapQuery,
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-2.5 text-xs font-bold text-gray-800 transition-all duration-300 hover:border-[#C8102E] hover:bg-[#C8102E] hover:text-white"
+                      >
+                        <MapPin className="h-3.5 w-3.5 text-red-500 transition-colors group-hover:text-white" />
+                        <span>View Google Location</span>
+                        <ExternalLink className="h-3 w-3 opacity-60" />
+                      </a>
+                    </div>
                   </div>
                 </motion.div>
               );

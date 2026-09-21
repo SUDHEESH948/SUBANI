@@ -1,6 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Check, MessageCircle, Search } from "lucide-react";
+import {
+  ArrowUpRight,
+  Check,
+  MessageCircle,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { PRODUCTS } from "../components/Products";
 
 // Corporate Brand Constants
@@ -170,6 +177,56 @@ function ProductCard({ product, onInquire }) {
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const navContainerRef = useRef(null);
+
+  const checkScrollability = () => {
+    if (navContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = navContainerRef.current;
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    checkScrollability();
+    const handleResize = () => checkScrollability();
+    window.addEventListener("resize", handleResize);
+    const timer = setTimeout(checkScrollability, 150);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const handleCategoryScroll = (direction) => {
+    if (navContainerRef.current) {
+      const scrollAmount = direction === "left" ? -220 : 220;
+      navContainerRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+      setTimeout(checkScrollability, 300);
+    }
+  };
+
+  const selectCategory = (category, btnElement) => {
+    setSelectedCategory(category);
+    if (navContainerRef.current && btnElement) {
+      const container = navContainerRef.current;
+      const scrollLeft =
+        btnElement.offsetLeft -
+        container.offsetLeft -
+        container.clientWidth / 2 +
+        btnElement.clientWidth / 2;
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: "smooth",
+      });
+      setTimeout(checkScrollability, 300);
+    }
+  };
 
   const filteredProducts = PRODUCTS.filter((product) => {
     const matchesCategory =
@@ -183,11 +240,18 @@ export default function ProductsPage() {
   });
 
   const handleInquire = (product) => {
-    const brandName = product.brand || "Koolath Group";
+    const isIftar =
+      product.brand === "IFTAR FOOD INDUSTRIES" ||
+      product.brand?.toLowerCase().includes("iftar");
+    const targetNumber =
+      product.whatsapp || (isIftar ? "917510116688" : "917510116699");
+    const brandName = isIftar
+      ? "Iftar Food Industries"
+      : product.brand || "Koolath Milling Company";
     const message = encodeURIComponent(
       `Hello ${brandName}, I am interested in "${product.name}". Please share product specifications, bulk pricing, and minimum order quantity.`,
     );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+    window.open(`https://wa.me/${targetNumber}?text=${message}`, "_blank");
   };
 
   return (
@@ -253,57 +317,95 @@ export default function ProductsPage() {
           </motion.div>
         </div>
 
-        {/* Category Tabs */}
-        <div className="mt-10 flex w-full flex-wrap items-center justify-start gap-2.5">
-          {CATEGORIES.map((category) => {
-            const isActive = selectedCategory === category;
+        {/* Category Tabs with Single-Line Horizontal Scroll and Arrow Buttons */}
+        <div className="relative mt-10 flex w-full items-center justify-start">
+          <motion.button
+            type="button"
+            onClick={() => handleCategoryScroll("left")}
+            disabled={!canScrollLeft}
+            whileHover={{ scale: canScrollLeft ? 1.1 : 1 }}
+            whileTap={{ scale: canScrollLeft ? 0.92 : 1 }}
+            className={`mr-1.5 sm:mr-2 flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm transition-all duration-200 ${
+              !canScrollLeft
+                ? "cursor-not-allowed opacity-25 pointer-events-none"
+                : "hover:border-red-200 hover:text-red-600 hover:shadow-md cursor-pointer active:bg-gray-50"
+            }`}
+            aria-label="Scroll Categories Left"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </motion.button>
 
-            return (
-              <button
-                key={category}
-                type="button"
-                onClick={() => setSelectedCategory(category)}
-                className="relative rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors duration-200 focus:outline-none"
-                style={{
-                  color: isActive ? "#FFFFFF" : DARK,
-                }}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeProductsPill"
-                    className="absolute inset-0 rounded-full shadow-lg"
-                    style={{
-                      backgroundColor: PRIMARY,
-                      boxShadow: `0 8px 20px -4px rgba(200, 16, 46, 0.45)`,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 450,
-                      damping: 35,
-                    }}
-                  />
-                )}
+          <div
+            ref={navContainerRef}
+            onScroll={checkScrollability}
+            className="flex items-center gap-2 overflow-x-auto px-1 py-2 no-scrollbar scroll-smooth"
+          >
+            {CATEGORIES.map((category) => {
+              const isActive = selectedCategory === category;
 
-                {!isActive && (
-                  <div className="absolute inset-0 rounded-full border border-gray-200 bg-white transition-colors duration-200 hover:border-red-200 hover:bg-gray-50" />
-                )}
-
-                <span className="relative z-10 flex items-center gap-2">
-                  {category}
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={(e) => selectCategory(category, e.currentTarget)}
+                  className="relative shrink-0 whitespace-nowrap rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors duration-200 focus:outline-none"
+                  style={{
+                    color: isActive ? "#FFFFFF" : DARK,
+                  }}
+                >
                   {isActive && (
-                    <motion.span
-                      layoutId="activeProdTabDot"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: [0, 1.3, 1] }}
-                      transition={{ duration: 0.3 }}
-                      className="inline-block h-2 w-2 rounded-full ring-2 ring-white/30"
-                      style={{ backgroundColor: ACCENT }}
+                    <motion.div
+                      layoutId="activeProductsPill"
+                      className="absolute inset-0 rounded-full shadow-lg"
+                      style={{
+                        backgroundColor: PRIMARY,
+                        boxShadow: `0 8px 20px -4px rgba(200, 16, 46, 0.45)`,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 450,
+                        damping: 35,
+                      }}
                     />
                   )}
-                </span>
-              </button>
-            );
-          })}
+
+                  {!isActive && (
+                    <div className="absolute inset-0 rounded-full border border-gray-200 bg-white transition-colors duration-200 hover:border-red-200 hover:bg-gray-50" />
+                  )}
+
+                  <span className="relative z-10 flex items-center gap-2">
+                    {category}
+                    {isActive && (
+                      <motion.span
+                        layoutId="activeProdTabDot"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: [0, 1.3, 1] }}
+                        transition={{ duration: 0.3 }}
+                        className="inline-block h-2 w-2 rounded-full ring-2 ring-white/30"
+                        style={{ backgroundColor: ACCENT }}
+                      />
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <motion.button
+            type="button"
+            onClick={() => handleCategoryScroll("right")}
+            disabled={!canScrollRight}
+            whileHover={{ scale: canScrollRight ? 1.1 : 1 }}
+            whileTap={{ scale: canScrollRight ? 0.92 : 1 }}
+            className={`ml-1.5 sm:ml-2 flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm transition-all duration-200 ${
+              !canScrollRight
+                ? "cursor-not-allowed opacity-25 pointer-events-none"
+                : "hover:border-red-200 hover:text-red-600 hover:shadow-md cursor-pointer active:bg-gray-50"
+            }`}
+            aria-label="Scroll Categories Right"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </motion.button>
         </div>
 
         {/* Product Grid */}
