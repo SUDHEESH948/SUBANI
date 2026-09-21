@@ -1,68 +1,137 @@
-﻿import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Check } from "lucide-react";
+import {
+  ArrowUpRight,
+  Check,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+} from "lucide-react";
 
 // Corporate Brand Colors
 const PRIMARY = "#C8102E"; // Corporate Red
-const ACCENT = "#F4B400";  // Corporate Yellow
+const ACCENT = "#F4B400"; // Corporate Yellow
 const DARK = "#111827";
-
-const PRODUCTS = [
-  {
-    id: 1,
-    name: "Premium Food Products",
-    category: "Food Products",
-    image:
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=80",
-    description:
-      "High-quality food products prepared with carefully selected ingredients to deliver excellent taste, freshness, and consistency.",
-    specs: ["Premium Quality", "Fresh Products", "Quality Checked"],
-    price: "Available on Request",
-    href: "/products",
-  },
-  {
-    id: 2,
-    name: "Fresh Ingredients",
-    category: "Ingredients",
-    image:
-      "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&w=1000&q=80",
-    description:
-      "Carefully sourced ingredients selected to maintain excellent quality, freshness, taste, and consistency across all batches.",
-    specs: ["Fresh Ingredients", "Quality Sourced", "Reliable Supply"],
-    price: "Available on Request",
-    href: "/products",
-  },
-  {
-    id: 3,
-    name: "Specialty Food Range",
-    category: "Specialty Products",
-    image:
-      "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1000&q=80",
-    description:
-      "A carefully developed range of food products created with a strong focus on quality, taste, consistency, and customer satisfaction.",
-    specs: ["Quality Focused", "Great Taste", "Trusted Quality"],
-    price: "Available on Request",
-    href: "/products",
-  },
-];
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=80";
+
+// 1. Eagerly import all product images from src/assets/product
+const imageModules = import.meta.glob(
+  "../assets/product/*.{png,jpg,jpeg,webp,svg,PNG,JPG,JPEG,WEBP,SVG}",
+  { eager: true },
+);
+
+// Product name lookup for clean Malayalam / English provision titles
+const PRODUCT_NAMES = {
+  atta: "Whole Wheat Atta",
+  avil: "Pure White Avil",
+  avilose: "Traditional Avilose Podi",
+  chilly: "Pure Red Chilly Powder",
+  gingelly: "Pure Gingelly Sesame Oil",
+  green: "Selected Green Gram",
+  kadalamavu: "Pure Kadalamavu (Gram Flour)",
+  kchilly: "Kashmiri Chilly Powder",
+  kozhiyada: "Authentic Kozhiyada Snacks",
+  mally: "Pure Coriander Powder (Malli)",
+  pathiri: "Special Roasted Pathiri Podi",
+  pchilly: "Crushed Dried Chilly",
+  puttu: "Premium White Puttu Podi",
+  ragi: "Healthy Ragi Flour",
+  ragiputtu: "Special Ragi Puttu Podi",
+  turmeric: "Golden Pure Turmeric Powder",
+  wheatputtu: "Pure Wheat Puttu Podi",
+};
+
+// Categorization helper
+function getCategory(key) {
+  if (
+    key.includes("chilly") ||
+    key.includes("mally") ||
+    key.includes("turmeric")
+  ) {
+    return "Spices & Powders";
+  }
+  if (key.includes("oil") || key.includes("gingelly")) {
+    return "Edible Oils";
+  }
+  if (
+    key.includes("puttu") ||
+    key.includes("pathiri") ||
+    key.includes("atta") ||
+    key.includes("ragi") ||
+    key.includes("kadala")
+  ) {
+    return "Flours & Podi";
+  }
+  if (
+    key.includes("avil") ||
+    key.includes("kozhiyada") ||
+    key.includes("green")
+  ) {
+    return "Traditional Provisions";
+  }
+  return "Food Products";
+}
+
+// Helper to format filenames into readable titles
+function formatTitleFromFilename(filepath) {
+  const filename =
+    filepath
+      .split("/")
+      .pop()
+      ?.replace(/\.[^/.]+$/, "") ?? "Product";
+  const cleanKey = filename.toLowerCase().replace(/[-_\s]/g, "");
+  if (PRODUCT_NAMES[cleanKey]) {
+    return PRODUCT_NAMES[cleanKey];
+  }
+  return filename
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+// 2. Transform the glob record into the product list
+export const PRODUCTS = Object.entries(imageModules).map(
+  ([path, module], index) => {
+    const name = formatTitleFromFilename(path);
+    const cleanKey =
+      path
+        .split("/")
+        .pop()
+        ?.replace(/\.[^/.]+$/, "")
+        .toLowerCase() ?? "";
+    const category = getCategory(cleanKey);
+    const brand = "KOOLATH MILLING COMPANY";
+
+    return {
+      id: index + 1,
+      name,
+      brand,
+      category,
+      image: module.default,
+      description: `High-quality ${name.toLowerCase()} sourced and processed by Koolath Milling Company under strict hygienic standards.`,
+      specs: ["100% Pure", "Quality Checked", "Hygienically Packed"],
+      price: "Available on Request",
+      href: "/products",
+    };
+  },
+);
 
 const gridVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.08,
       delayChildren: 0.05,
     },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  hidden: { opacity: 0, y: 25, scale: 0.96 },
   visible: {
     opacity: 1,
     y: 0,
@@ -76,12 +145,12 @@ const cardVariants = {
   exit: {
     opacity: 0,
     scale: 0.92,
-    y: 20,
+    y: 15,
     transition: { duration: 0.2 },
   },
 };
 
-function ProductCard({ product }) {
+function ProductCard({ product, onView }) {
   return (
     <motion.article
       layout
@@ -90,61 +159,72 @@ function ProductCard({ product }) {
       transition={{ type: "spring", stiffness: 350, damping: 25 }}
       className="group flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-red-200 hover:shadow-2xl"
     >
-      {/* Product Content & Visual */}
+      {/* Product Image & Badges */}
       <div>
-        <div className="relative h-60 w-full overflow-hidden bg-gray-100">
+        <div
+          onClick={() => onView(product)}
+          className="group/img relative h-64 w-full cursor-pointer overflow-hidden bg-gray-50 flex items-center justify-center p-4 transition-colors hover:bg-gray-100/70"
+          title="Click to view image"
+        >
           <img
             src={product.image}
             alt={product.name}
             onError={(e) => {
               e.currentTarget.src = FALLBACK_IMAGE;
             }}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
 
-          {/* Image Overlay */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to top, rgba(0,0,0,0.60), transparent 60%)",
-            }}
-          />
+          {/* Quick Click-to-View Hover Overlay */}
+          <div className="pointer-events-none absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-200 group-hover/img:opacity-100 flex items-center justify-center">
+            <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-gray-900 shadow-md backdrop-blur-sm transition-transform group-hover/img:scale-105">
+              <Eye className="h-3.5 w-3.5 text-red-600" />
+              <span>View Image</span>
+            </span>
+          </div>
 
           {/* Category Badge */}
           <span
-            className="absolute left-4 top-4 rounded-lg px-3 py-1.5 text-xs font-bold shadow-sm backdrop-blur-md"
+            className="absolute left-3 top-3 rounded-lg px-2.5 py-1 text-[11px] font-bold shadow-xs backdrop-blur-md z-10"
             style={{
-              backgroundColor: "rgba(255,255,255,0.95)",
+              backgroundColor: "rgba(255,255,255,0.92)",
               color: PRIMARY,
             }}
           >
             {product.category}
           </span>
 
-          {/* Yellow Accent Line */}
+          {/* Brand Tag */}
+          <span className="absolute right-3 top-3 rounded-md bg-black/70 px-2.5 py-1 text-[9px] font-extrabold tracking-wider text-yellow-300 uppercase shadow-xs backdrop-blur-xs z-10">
+            {product.brand}
+          </span>
+
+          {/* Bottom Accent Line */}
           <div
-            className="absolute bottom-0 left-0 h-1.5 w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+            className="absolute bottom-0 left-0 h-1 w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
             style={{ backgroundColor: ACCENT }}
           />
         </div>
 
-        <div className="p-6 pb-0">
-          <h3 className="text-lg font-bold tracking-tight text-gray-900 transition-colors duration-300 group-hover:text-red-700">
+        <div className="p-5 pb-0">
+          <h3
+            onClick={() => onView(product)}
+            className="cursor-pointer text-base font-extrabold tracking-tight text-gray-900 transition-colors duration-300 hover:text-red-700 group-hover:text-red-700"
+          >
             {product.name}
           </h3>
 
-          <p className="mt-2 text-sm leading-relaxed text-gray-500">
+          <p className="mt-1.5 text-xs leading-relaxed text-gray-500 line-clamp-2">
             {product.description}
           </p>
 
           {/* Specifications */}
-          <ul className="mt-5 flex list-none flex-wrap gap-2 p-0">
+          <ul className="mt-4 flex list-none flex-wrap gap-1.5 p-0">
             {product.specs.map((spec) => (
               <li
                 key={spec}
-                className="inline-flex items-center gap-1.5 rounded-md bg-gray-50 px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 transition-colors group-hover:bg-red-50/50"
+                className="inline-flex items-center gap-1 rounded-md bg-gray-50 px-2 py-1 text-[10px] font-semibold text-gray-700 transition-colors group-hover:bg-red-50/50"
               >
                 <Check
                   className="h-3 w-3 shrink-0"
@@ -159,26 +239,26 @@ function ProductCard({ product }) {
         </div>
       </div>
 
-      {/* Card Footer with SPA Link */}
-      <div className="mt-6 flex items-center justify-between border-t border-gray-100 px-6 py-4">
+      {/* Card Footer with Details Link */}
+      <div className="mt-5 flex items-center justify-between border-t border-gray-100 px-5 py-3.5">
         <div>
-          <span className="block text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+          <span className="block text-[9px] font-bold uppercase tracking-wider text-gray-400">
             Pricing
           </span>
-          <span className="text-sm font-extrabold text-gray-900">
+          <span className="text-xs font-black text-gray-900">
             {product.price}
           </span>
         </div>
 
-        {/* View Details Button with React Router Link */}
-        <Link
-          to={product.href}
-          className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-[0.97]"
+        <button
+          type="button"
+          onClick={() => onView(product)}
+          className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold text-white shadow-xs transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-[0.97]"
           style={{ backgroundColor: PRIMARY }}
         >
           <span>View Details</span>
           <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-        </Link>
+        </button>
       </div>
     </motion.article>
   );
@@ -186,6 +266,7 @@ function ProductCard({ product }) {
 
 export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [activeProduct, setActiveProduct] = useState(null);
 
   const categories = [
     "All",
@@ -196,6 +277,65 @@ export default function Products() {
     selectedCategory === "All"
       ? PRODUCTS
       : PRODUCTS.filter((product) => product.category === selectedCategory);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (activeProduct) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [activeProduct]);
+
+  // Keyboard navigation (Escape to close, Left/Right arrows to cycle)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!activeProduct) return;
+      if (e.key === "Escape") {
+        setActiveProduct(null);
+      } else if (e.key === "ArrowLeft") {
+        const curr = filteredProducts.findIndex(
+          (p) => p.id === activeProduct.id,
+        );
+        if (curr > 0) setActiveProduct(filteredProducts[curr - 1]);
+        else setActiveProduct(filteredProducts[filteredProducts.length - 1]);
+      } else if (e.key === "ArrowRight") {
+        const curr = filteredProducts.findIndex(
+          (p) => p.id === activeProduct.id,
+        );
+        if (curr < filteredProducts.length - 1)
+          setActiveProduct(filteredProducts[curr + 1]);
+        else setActiveProduct(filteredProducts[0]);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeProduct, filteredProducts]);
+
+  const currentIndex = activeProduct
+    ? filteredProducts.findIndex((p) => p.id === activeProduct.id)
+    : -1;
+
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    if (currentIndex > 0) {
+      setActiveProduct(filteredProducts[currentIndex - 1]);
+    } else {
+      setActiveProduct(filteredProducts[filteredProducts.length - 1]);
+    }
+  };
+
+  const handleNext = (e) => {
+    e.stopPropagation();
+    if (currentIndex < filteredProducts.length - 1) {
+      setActiveProduct(filteredProducts[currentIndex + 1]);
+    } else {
+      setActiveProduct(filteredProducts[0]);
+    }
+  };
 
   return (
     <section className="min-h-screen bg-gray-50 px-6 py-20 lg:px-8">
@@ -213,7 +353,7 @@ export default function Products() {
               className="text-xs font-bold uppercase tracking-[0.25em]"
               style={{ color: PRIMARY }}
             >
-              IFTAR QUALITY ASSURED
+              KOOLATH MILLING COMPANY
             </span>
             <span
               className="h-1.5 w-1.5 rounded-full"
@@ -226,8 +366,8 @@ export default function Products() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600">
-            Discover our quality food products, carefully developed with a focus
-            on freshness, taste, consistency, and customer satisfaction.
+            Carefully sourced and processed provisions—delivering farm-fresh
+            quality, authentic taste, and verified purity to your doorstep.
           </p>
 
           {/* Category Filter with Animated Indicator */}
@@ -240,7 +380,7 @@ export default function Products() {
                   key={category}
                   type="button"
                   onClick={() => setSelectedCategory(category)}
-                  className="relative rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-200 focus:outline-none"
+                  className="relative rounded-full px-5 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-200 focus:outline-none"
                   style={{
                     color: isActive ? "#FFFFFF" : DARK,
                   }}
@@ -250,7 +390,11 @@ export default function Products() {
                       layoutId="homeProductActiveTab"
                       className="absolute inset-0 rounded-full shadow-md"
                       style={{ backgroundColor: PRIMARY }}
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 450,
+                        damping: 35,
+                      }}
                     />
                   ) : (
                     <div className="absolute inset-0 rounded-full border border-gray-200 bg-white transition-colors hover:border-red-200 hover:bg-gray-50" />
@@ -277,14 +421,158 @@ export default function Products() {
           variants={gridVariants}
           initial="hidden"
           animate="visible"
-          className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onView={setActiveProduct}
+              />
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* ============================================================
+            PRODUCT IMAGE LIGHTBOX / DETAIL MODAL
+        ============================================================ */}
+        <AnimatePresence>
+          {activeProduct && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveProduct(null)}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 sm:p-6 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/20 bg-white shadow-2xl"
+              >
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setActiveProduct(null)}
+                  className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md transition-all hover:bg-black hover:scale-105 active:scale-95 shadow-md"
+                  aria-label="Close product view"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+
+                {/* Left & Right Carousel Arrows inside modal */}
+                {filteredProducts.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handlePrev}
+                      className="absolute left-3 top-1/3 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/85 text-gray-800 shadow-lg backdrop-blur-md transition-all hover:bg-white hover:scale-110 active:scale-95"
+                      aria-label="Previous product"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      className="absolute right-3 top-1/3 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/85 text-gray-800 shadow-lg backdrop-blur-md transition-all hover:bg-white hover:scale-110 active:scale-95"
+                      aria-label="Next product"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
+
+                {/* Large Product Image Preview */}
+                <div className="relative flex h-72 sm:h-96 w-full items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100/60 p-6 sm:p-8">
+                  <motion.img
+                    key={activeProduct.id}
+                    initial={{ opacity: 0, scale: 0.94 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.94 }}
+                    transition={{ duration: 0.2 }}
+                    src={activeProduct.image}
+                    alt={activeProduct.name}
+                    onError={(e) => {
+                      e.currentTarget.src = FALLBACK_IMAGE;
+                    }}
+                    className="h-full w-full object-contain drop-shadow-md"
+                  />
+
+                  {/* Top Left Category Badge */}
+                  <span
+                    className="absolute left-4 top-4 rounded-lg px-3 py-1.5 text-xs font-bold shadow-xs backdrop-blur-md"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.95)",
+                      color: PRIMARY,
+                    }}
+                  >
+                    {activeProduct.category}
+                  </span>
+                </div>
+
+                {/* Product Details Section */}
+                <div className="p-6 sm:p-7">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <span className="inline-block rounded-md bg-yellow-400/20 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-yellow-800">
+                        {activeProduct.brand}
+                      </span>
+                      <h3 className="mt-1 text-xl sm:text-2xl font-black text-gray-900">
+                        {activeProduct.name}
+                      </h3>
+                    </div>
+
+                    <span className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-black text-gray-900">
+                      {activeProduct.price}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-xs sm:text-sm leading-relaxed text-gray-600">
+                    {activeProduct.description}
+                  </p>
+
+                  {/* Quality Specifications */}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {activeProduct.specs.map((spec, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-red-50/80 px-2.5 py-1 text-xs font-semibold text-red-700"
+                      >
+                        <Check className="h-3.5 w-3.5 text-red-600" />
+                        {spec}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-100 pt-4">
+                    <span className="text-[11px] text-gray-400 text-center sm:text-left">
+                      Product #{currentIndex + 1} of {filteredProducts.length} •
+                      Press Esc to close
+                    </span>
+
+                    <a
+                      href={`https://wa.me/917510116699?text=${encodeURIComponent(
+                        `Hello, I would like to inquire about ${activeProduct.name} from Koolath Milling Company.`,
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:shadow-md hover:scale-105 active:scale-95"
+                      style={{ backgroundColor: PRIMARY }}
+                    >
+                      <span>Inquire on WhatsApp</span>
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

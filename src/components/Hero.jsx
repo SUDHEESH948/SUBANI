@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   motion,
   useMotionValue,
@@ -19,8 +19,6 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
-  Pause,
-  Play,
   ShieldCheck,
   TrendingUp,
 } from "lucide-react";
@@ -108,7 +106,6 @@ const COMPANIES = [
 
 function Hero() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
 
   // 3D Card tilt effect
   const mouseX = useMotionValue(0);
@@ -133,12 +130,12 @@ function Hero() {
 
   // Auto slide runner
   useEffect(() => {
-    if (!isPlaying || COMPANIES.length === 0) return;
+    if (COMPANIES.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % COMPANIES.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, [isPlaying]);
+  }, []);
 
   const handleNext = () => {
     if (COMPANIES.length === 0) return;
@@ -348,20 +345,6 @@ function Hero() {
                     {activeCompany.badge}
                   </span>
                 </div>
-
-                {/* Play / Pause Toggle Button */}
-                <button
-                  type="button"
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition hover:bg-black/80 border border-white/15"
-                  aria-label={isPlaying ? "Pause autoplay" : "Start autoplay"}
-                >
-                  {isPlaying ? (
-                    <Pause className="h-3.5 w-3.5" />
-                  ) : (
-                    <Play className="h-3.5 w-3.5 ml-0.5 fill-white" />
-                  )}
-                </button>
 
                 {/* Bottom Glass Caption Bar */}
                 <div className="absolute bottom-3 left-3 right-3 z-10 rounded-xl border border-white/20 bg-black/60 p-3 sm:p-3.5 backdrop-blur-md shadow-lg">
