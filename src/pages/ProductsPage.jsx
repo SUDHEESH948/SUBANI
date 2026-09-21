@@ -1,50 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Check, MessageCircle, Search } from "lucide-react";
+import { PRODUCTS } from "../components/Products";
 
 // Corporate Brand Constants
 const PRIMARY = "#C8102E"; // Brand Red
-const ACCENT = "#F4B400";  // Accent Yellow / Gold
+const ACCENT = "#F4B400"; // Accent Yellow / Gold
 const DARK = "#111827";
 
-const COMPANY_NAME = "IFTAR FOOD INDUSTRIES";
 const WHATSAPP_NUMBER = "917510116699"; // Verified Subani WhatsApp line
-
-const PRODUCTS = [
-  {
-    id: 1,
-    name: "Premium Food Products",
-    description:
-      "High-quality food products prepared with carefully selected ingredients to deliver excellent taste, freshness, and consistency.",
-    price: "Available on Request",
-    category: "Premium Range",
-    image:
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80",
-    specs: ["Premium Quality", "Freshly Packed", "Quality Checked"],
-  },
-  {
-    id: 2,
-    name: "Fresh Food Ingredients",
-    description:
-      "Carefully sourced raw ingredients selected to maintain consistent quality, freshness, and authentic taste across batches.",
-    price: "Available on Request",
-    category: "Ingredients",
-    image:
-      "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&w=900&q=80",
-    specs: ["Directly Sourced", "Hygienic Storage", "Reliable Supply"],
-  },
-  {
-    id: 3,
-    name: "Specialty Food Range",
-    description:
-      "A curated culinary line developed with authentic recipes focused on batch consistency and elevated customer satisfaction.",
-    price: "Available on Request",
-    category: "Specialty",
-    image:
-      "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=900&q=80",
-    specs: ["Authentic Flavor", "Zero Compromise", "Strict Standards"],
-  },
-];
 
 const CATEGORIES = [
   "All",
@@ -95,7 +59,7 @@ function ProductCard({ product, onInquire }) {
       className="group relative flex flex-col overflow-hidden rounded-3xl border border-gray-200/90 bg-white shadow-sm transition-all duration-300 hover:border-red-200 hover:shadow-2xl"
     >
       {/* Product Image & Badges */}
-      <div className="relative h-64 overflow-hidden bg-gray-100">
+      <div className="relative h-64 overflow-hidden bg-gray-50 flex items-center justify-center p-4">
         <img
           src={product.image}
           alt={product.name}
@@ -103,19 +67,11 @@ function ProductCard({ product, onInquire }) {
           onError={(e) => {
             e.currentTarget.src = FALLBACK_IMAGE;
           }}
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-        />
-
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 60%)",
-          }}
+          className="h-full w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
         />
 
         <span
-          className="absolute left-4 top-4 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider shadow-md backdrop-blur-md"
+          className="absolute left-4 top-4 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider shadow-xs backdrop-blur-md z-10"
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.95)",
             color: PRIMARY,
@@ -123,6 +79,25 @@ function ProductCard({ product, onInquire }) {
         >
           {product.category}
         </span>
+
+        {/* Brand Tag */}
+        {product.brand && (
+          <span
+            className="absolute right-4 top-4 rounded-md px-2.5 py-1 text-[9px] font-extrabold tracking-wider uppercase shadow-xs backdrop-blur-xs z-10"
+            style={{
+              backgroundColor:
+                product.brand === "IFTAR FOOD INDUSTRIES"
+                  ? "rgba(200, 16, 46, 0.9)"
+                  : "rgba(0, 0, 0, 0.72)",
+              color:
+                product.brand === "IFTAR FOOD INDUSTRIES"
+                  ? "#FFFFFF"
+                  : "#FFCA00",
+            }}
+          >
+            {product.brand}
+          </span>
+        )}
 
         {/* Brand Liquid Accent Strip */}
         <motion.div
@@ -201,13 +176,16 @@ export default function ProductsPage() {
       selectedCategory === "All" || product.category === selectedCategory;
     const matchesSearch =
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.brand &&
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase())) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   const handleInquire = (product) => {
+    const brandName = product.brand || "Koolath Group";
     const message = encodeURIComponent(
-      `Hello ${COMPANY_NAME}, I am interested in "${product.name}". Please share product specifications, bulk pricing, and minimum order quantity.`
+      `Hello ${brandName}, I am interested in "${product.name}". Please share product specifications, bulk pricing, and minimum order quantity.`,
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
   };
@@ -251,8 +229,9 @@ export default function ProductsPage() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="mt-4 max-w-2xl text-base leading-7 text-gray-600"
             >
-              Discover quality food products and wholesale provisions crafted with high hygiene
-              standards, dependable freshness, and consistent supply.
+              Discover quality food products and wholesale provisions crafted
+              with high hygiene standards, dependable freshness, and consistent
+              supply.
             </motion.p>
           </div>
 

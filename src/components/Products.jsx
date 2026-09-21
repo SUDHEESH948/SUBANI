@@ -18,9 +18,9 @@ const DARK = "#111827";
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=80";
 
-// 1. Eagerly import all product images from src/assets/product
+// 1. Eagerly import all product images from src/assets/product (including subdirectories like iftar/)
 const imageModules = import.meta.glob(
-  "../assets/product/*.{png,jpg,jpeg,webp,svg,PNG,JPG,JPEG,WEBP,SVG}",
+  "../assets/product/**/*.{png,jpg,jpeg,webp,svg,PNG,JPG,JPEG,WEBP,SVG}",
   { eager: true },
 );
 
@@ -30,6 +30,7 @@ const PRODUCT_NAMES = {
   avil: "Pure White Avil",
   avilose: "Traditional Avilose Podi",
   chilly: "Pure Red Chilly Powder",
+  driedchilly: "Sun-Dried Red Chilly",
   gingelly: "Pure Gingelly Sesame Oil",
   green: "Selected Green Gram",
   kadalamavu: "Pure Kadalamavu (Gram Flour)",
@@ -41,7 +42,9 @@ const PRODUCT_NAMES = {
   puttu: "Premium White Puttu Podi",
   ragi: "Healthy Ragi Flour",
   ragiputtu: "Special Ragi Puttu Podi",
+  sp: "Special Biriyani Spices",
   turmeric: "Golden Pure Turmeric Powder",
+  wcoriander: "Whole Coriander Seeds",
   wheatputtu: "Pure Wheat Puttu Podi",
 };
 
@@ -50,7 +53,9 @@ function getCategory(key) {
   if (
     key.includes("chilly") ||
     key.includes("mally") ||
-    key.includes("turmeric")
+    key.includes("turmeric") ||
+    key.includes("coriander") ||
+    key.includes("sp")
   ) {
     return "Spices & Powders";
   }
@@ -103,7 +108,17 @@ export const PRODUCTS = Object.entries(imageModules).map(
         ?.replace(/\.[^/.]+$/, "")
         .toLowerCase() ?? "";
     const category = getCategory(cleanKey);
-    const brand = "KOOLATH MILLING COMPANY";
+
+    // Detect if the product image is inside the iftar folder
+    const isIftar =
+      path.toLowerCase().includes("/iftar/") ||
+      path.toLowerCase().includes("iftar");
+
+    const brand = isIftar ? "IFTAR FOOD INDUSTRIES" : "KOOLATH MILLING COMPANY";
+
+    const description = isIftar
+      ? `High-quality ${name.toLowerCase()} manufactured and packed by Iftar Food Industries under certified hygienic standards.`
+      : `High-quality ${name.toLowerCase()} sourced and processed by Koolath Milling Company under strict hygienic standards.`;
 
     return {
       id: index + 1,
@@ -111,7 +126,7 @@ export const PRODUCTS = Object.entries(imageModules).map(
       brand,
       category,
       image: module.default,
-      description: `High-quality ${name.toLowerCase()} sourced and processed by Koolath Milling Company under strict hygienic standards.`,
+      description,
       specs: ["100% Pure", "Quality Checked", "Hygienically Packed"],
       price: "Available on Request",
       href: "/products",
@@ -196,7 +211,19 @@ function ProductCard({ product, onView }) {
           </span>
 
           {/* Brand Tag */}
-          <span className="absolute right-3 top-3 rounded-md bg-black/70 px-2.5 py-1 text-[9px] font-extrabold tracking-wider text-yellow-300 uppercase shadow-xs backdrop-blur-xs z-10">
+          <span
+            className="absolute right-3 top-3 rounded-md px-2.5 py-1 text-[9px] font-extrabold tracking-wider uppercase shadow-xs backdrop-blur-xs z-10"
+            style={{
+              backgroundColor:
+                product.brand === "IFTAR FOOD INDUSTRIES"
+                  ? "rgba(200, 16, 46, 0.9)"
+                  : "rgba(0, 0, 0, 0.72)",
+              color:
+                product.brand === "IFTAR FOOD INDUSTRIES"
+                  ? "#FFFFFF"
+                  : "#FFCA00",
+            }}
+          >
             {product.brand}
           </span>
 
@@ -518,7 +545,19 @@ export default function Products() {
                 <div className="p-6 sm:p-7">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
-                      <span className="inline-block rounded-md bg-yellow-400/20 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-yellow-800">
+                      <span
+                        className="inline-block rounded-md px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider"
+                        style={{
+                          backgroundColor:
+                            activeProduct.brand === "IFTAR FOOD INDUSTRIES"
+                              ? "rgba(200, 16, 46, 0.12)"
+                              : "rgba(244, 180, 0, 0.18)",
+                          color:
+                            activeProduct.brand === "IFTAR FOOD INDUSTRIES"
+                              ? "#C8102E"
+                              : "#854d0e",
+                        }}
+                      >
                         {activeProduct.brand}
                       </span>
                       <h3 className="mt-1 text-xl sm:text-2xl font-black text-gray-900">
@@ -557,7 +596,7 @@ export default function Products() {
 
                     <a
                       href={`https://wa.me/917510116699?text=${encodeURIComponent(
-                        `Hello, I would like to inquire about ${activeProduct.name} from Koolath Milling Company.`,
+                        `Hello, I would like to inquire about ${activeProduct.name} from ${activeProduct.brand}.`,
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
